@@ -191,9 +191,7 @@
   .compare-card h3 { font-size: 1.35rem; margin-bottom: 12px; }
   .compare-card p { font-size: 1.05rem; color: #4A5568; line-height: 1.85; }
 
-  /* =========================================================
-     双向心动对比展示卡
-     ========================================================= */
+  /* 心动值容器 */
   .score-dual-container {
     max-width: 720px; margin: 0 auto;
     display: flex; flex-direction: column; gap: 22px;
@@ -248,7 +246,6 @@
   .reply-yes { background: #E6F8F0; color: var(--shin-green); border: 2px dashed var(--shin-green); }
   .reply-no { background: #F8FAFC; color: #64748B; border: 2px dashed #CBD5E1; }
 
-  /* 禁用与权限样式 */
   .disabled-preview {
     opacity: 0.65;
     cursor: not-allowed !important;
@@ -430,14 +427,6 @@
     </div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
-    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">你对 TA 的心动印象分设定</div>
-    <div class="form-group">
-      <label>你给 TA 的心动数值与文案</label>
-      <input type="text" class="form-input" id="cfg_authorScoreVal" placeholder="例如：520% 或 100%">
-      <input type="text" class="form-input" id="cfg_authorScoreDesc" placeholder="例如：毫无疑问是满分心动！甚至爆表到了外太空～ 🚀">
-    </div>
-
-    <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
     <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">认识与发展问答</div>
     <div class="form-group">
       <label>「认识一下」说明文字</label>
@@ -537,27 +526,42 @@
 
 <!-- ============ 3. 双向心动值板块 ============ -->
 <section id="scoreSec">
-  <div class="section-head">
-    <div class="eyebrow serif">Heartbeat Match</div>
-    <h2>双向心动印象分</h2>
-    <p>看看我对你的心动，也留下你给我的评分吧 📈</p>
-  </div>
-  
-  <div class="score-dual-container">
-    <!-- 上方：你给 TA 的心动值（TA 只能看不能改） -->
-    <div class="score-box score-author-box">
-      <div style="font-weight:900;color:var(--shin-purple);font-size:1.05rem;" id="authorScoreTitle">💌 我给你的心动值（满分心动）</div>
-      <div class="score-display" id="authorScoreVal">520% 🚀</div>
-      <div class="score-comment" id="authorScoreDesc">毫无疑问是满分心动！甚至爆表到了外太空～</div>
+  <!-- 表白者端看到的单卡片模式 -->
+  <div id="authorScoreSectionWrap">
+    <div class="section-head">
+      <div class="eyebrow serif">Rating For You</div>
+      <h2>我对你的心动印象分</h2>
+      <p>你在我心里的心动数值（拖动滑杆设定后，TA 打开链接就能直接看到）📈</p>
     </div>
+    <div class="score-box" style="max-width:640px;margin:0 auto;">
+      <div style="font-weight:800;color:#6C768A;">当前心动印象值</div>
+      <div class="score-display" id="authorLiveScoreVal">90%</div>
+      <input type="range" class="score-slider" id="authorScoreSlider" min="0" max="100" value="90">
+      <div class="score-comment" id="authorLiveScoreDesc">心动值持续攀升中，根本停不下来～</div>
+    </div>
+  </div>
 
-    <!-- 下方：TA 给你的心动值（TA 亲自滑动） -->
-    <div class="score-box">
-      <div style="font-weight:900;color:var(--dark-ink);font-size:1.05rem;" id="viewerScoreTitle">✨ 你给我的心动值（拖动滑杆给我打分）</div>
-      <div class="score-display" id="viewerScoreVal">100%</div>
-      <input type="range" class="score-slider" id="viewerScoreSlider" min="0" max="100" value="100">
-      <div class="score-comment" id="viewerScoreDesc">拖动滑杆设定你的心动数值吧～</div>
-      <div id="scoreLockTag" class="preview-lock-tag" style="display:none;margin-top:12px;">🔒 发起人预览态：此滑杆供 TA 打开链接后打分</div>
+  <!-- 被表白者端看到的双卡片对比模式 -->
+  <div id="viewerScoreSectionWrap" style="display:none;">
+    <div class="section-head">
+      <div class="eyebrow serif">Heartbeat Match</div>
+      <h2>双向心动印象分</h2>
+      <p>看看我对你的心动，也留下你给我的评分吧 📈</p>
+    </div>
+    <div class="score-dual-container">
+      <!-- 上卡片：展示表白者给的心动值 -->
+      <div class="score-box score-author-box">
+        <div style="font-weight:900;color:var(--shin-purple);font-size:1.05rem;">💌 我给你的心动值</div>
+        <div class="score-display" id="authorScoreVal">90%</div>
+        <div class="score-comment" id="authorScoreDesc">心动值持续攀升中，根本停不下来～</div>
+      </div>
+      <!-- 下卡片：供 TA 自己滑动打分 -->
+      <div class="score-box">
+        <div style="font-weight:900;color:var(--dark-ink);font-size:1.05rem;">✨ 你给我的心动值（拖动滑杆给我打分）</div>
+        <div class="score-display" id="viewerScoreVal">100%</div>
+        <input type="range" class="score-slider" id="viewerScoreSlider" min="0" max="100" value="100">
+        <div class="score-comment" id="viewerScoreDesc">毫无疑问是满分心动！甚至爆表到了外太空～ 🚀</div>
+      </div>
     </div>
   </div>
 </section>
@@ -659,17 +663,15 @@
 <footer>Made with ❤️ & Crayon Shin-chan Style · 调皮且真诚</footer>
 
 <script>
-/* =========================================================
-   全局数据结构与状态服务
-   ========================================================= */
 const DEFAULT_CONFIG = {
   herName: "你", yourName: "我",
   firstImpTitle: "看起来有点高冷的小仙女",
   firstImpText: "刚认识你的时候，总觉得你文静又带着点距离感，连跟你说话都要在心里打好几遍草稿。",
   nowImpTitle: "原来是个可可爱爱的捣蛋鬼",
   nowImpText: "熟悉之后才发现，你笑起来眼睛会弯成月牙，吃好吃的会摇头晃脑，完全就是元气小可爱！",
-  authorScoreVal: "520% 🚀",
-  authorScoreDesc: "毫无疑问是满分心动！甚至爆表到了外太空～",
+  authorScoreNum: 90,
+  authorScoreVal: "90%",
+  authorScoreDesc: "心动值持续攀升中，根本停不下来～",
   meetText: "想知道你的喜怒哀乐、喜欢吃什么口味的冰淇淋，以及所有关于你的可爱细节。",
   developText: "不仅仅是分享日常的朋友，更想成为那个可以正大光明牵你的手、陪你很久的人。",
   meetYesReply: "太棒啦！新的快乐之旅开启 🎈",
@@ -699,7 +701,6 @@ let CURRENT_CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 let CURRENT_ROOM_ID = localStorage.getItem('MY_ROOM_ID') || ('room_' + Math.random().toString(36).substr(2, 9));
 localStorage.setItem('MY_ROOM_ID', CURRENT_ROOM_ID);
 
-/* 双向状态存储 */
 const StateService = {
   submitAnswer(key, value) {
     const localAnswers = JSON.parse(localStorage.getItem('ANSWERS_' + CURRENT_ROOM_ID) || '{}');
@@ -719,16 +720,18 @@ function checkAccessMode() {
   if (room) CURRENT_ROOM_ID = room;
 
   if (viewData) {
-    // 【被表白者查看模式】：完全移除顶部工具栏，全部卡片/选项解锁供 TA 操作
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
+    document.getElementById('authorScoreSectionWrap').style.display = 'none';
+    document.getElementById('viewerScoreSectionWrap').style.display = 'block';
     try {
       const decoded = JSON.parse(decodeURIComponent(escape(atob(viewData))));
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
-    // 【表白者模式】：表白者可使用专属表白工坊，预览锁定其余互动
     isViewerMode = false;
+    document.getElementById('authorScoreSectionWrap').style.display = 'block';
+    document.getElementById('viewerScoreSectionWrap').style.display = 'none';
     const localSaved = localStorage.getItem('MY_CONFESS_CONFIG_FINAL');
     if (localSaved) {
       try { CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, JSON.parse(localSaved)); } catch(e){}
@@ -745,9 +748,17 @@ function renderPage() {
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
   
-  // 渲染你给 TA 的心动值
-  document.getElementById('authorScoreVal').textContent = CURRENT_CONFIG.authorScoreVal || "520% 🚀";
-  document.getElementById('authorScoreDesc').textContent = CURRENT_CONFIG.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～";
+  // 同步心动值展示
+  const scoreNum = CURRENT_CONFIG.authorScoreNum || 90;
+  const scoreVal = CURRENT_CONFIG.authorScoreVal || "90%";
+  const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "心动值持续攀升中，根本停不下来～";
+  
+  document.getElementById('authorLiveScoreVal').textContent = scoreVal;
+  document.getElementById('authorLiveScoreDesc').textContent = scoreDesc;
+  document.getElementById('authorScoreSlider').value = scoreNum;
+  
+  document.getElementById('authorScoreVal').textContent = scoreVal;
+  document.getElementById('authorScoreDesc').textContent = scoreDesc;
   
   document.getElementById('meetText').textContent = CURRENT_CONFIG.meetText;
   document.getElementById('developText').textContent = CURRENT_CONFIG.developText;
@@ -772,8 +783,6 @@ function renderPage() {
         </div>
       </div>
     `;
-    
-    // 权限控制：仅被表白者可以翻开
     card.addEventListener('click', () => {
       if (!isViewerMode) {
         alert("🔒 发起人预览态：翻开真心话卡片仅限 TA 收到链接后开启哦！");
@@ -793,29 +802,51 @@ function renderPage() {
     reel.appendChild(p);
   });
 
-  // 权限视图切换
   if (!isViewerMode) {
     document.getElementById('meetRow').classList.add('disabled-preview');
     document.getElementById('devRow').classList.add('disabled-preview');
     document.getElementById('answerRow').classList.add('disabled-preview');
     document.getElementById('reasonGrid').classList.add('disabled-preview');
-    document.getElementById('viewerScoreSlider').disabled = true;
     document.getElementById('meetLockTag').style.display = 'inline-block';
     document.getElementById('devLockTag').style.display = 'inline-block';
     document.getElementById('reasonsLockTag').style.display = 'block';
-    document.getElementById('scoreLockTag').style.display = 'inline-block';
   } else {
     document.getElementById('meetRow').classList.remove('disabled-preview');
     document.getElementById('devRow').classList.remove('disabled-preview');
     document.getElementById('answerRow').classList.remove('disabled-preview');
     document.getElementById('reasonGrid').classList.remove('disabled-preview');
-    document.getElementById('viewerScoreSlider').disabled = false;
     document.getElementById('meetLockTag').style.display = 'none';
     document.getElementById('devLockTag').style.display = 'none';
     document.getElementById('reasonsLockTag').style.display = 'none';
-    document.getElementById('scoreLockTag').style.display = 'none';
   }
 }
+
+/* 表白者滑动滑杆时，实时更新并保存心动值 */
+const authorScoreSlider = document.getElementById('authorScoreSlider');
+function updateAuthorScore(v) {
+  let valText = v + "%";
+  let descText = "心动值持续攀升中，感觉非常棒！✨";
+  if (v === 100) {
+    valText = "520% 🚀";
+    descText = "毫无疑问是满分心动！甚至爆表到了外太空～";
+    if (window.confetti) confetti({ particleCount: 35, spread: 60, origin: { y: 0.6 } });
+  } else if (v >= 80) {
+    descText = "心动值持续攀升中，根本停不下来～";
+  } else if (v >= 50) {
+    descText = "心动的感觉越来越强烈了～";
+  } else {
+    descText = "只要看到你，心跳就会悄悄加速！";
+  }
+  
+  CURRENT_CONFIG.authorScoreNum = v;
+  CURRENT_CONFIG.authorScoreVal = valText;
+  CURRENT_CONFIG.authorScoreDesc = descText;
+  
+  document.getElementById('authorLiveScoreVal').textContent = valText;
+  document.getElementById('authorLiveScoreDesc').textContent = descText;
+  localStorage.setItem('MY_CONFESS_CONFIG_FINAL', JSON.stringify(CURRENT_CONFIG));
+}
+authorScoreSlider.addEventListener('input', (e) => updateAuthorScore(parseInt(e.target.value)));
 
 function initDrawerForm() {
   const c = CURRENT_CONFIG;
@@ -823,8 +854,6 @@ function initDrawerForm() {
   setVal('cfg_herName', c.herName); setVal('cfg_yourName', c.yourName);
   setVal('cfg_firstImpTitle', c.firstImpTitle); setVal('cfg_firstImpText', c.firstImpText);
   setVal('cfg_nowImpTitle', c.nowImpTitle); setVal('cfg_nowImpText', c.nowImpText);
-  setVal('cfg_authorScoreVal', c.authorScoreVal || "520% 🚀");
-  setVal('cfg_authorScoreDesc', c.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～");
   setVal('cfg_meetText', c.meetText); setVal('cfg_meetYes', c.meetYesReply); setVal('cfg_meetNo', c.meetNoReply);
   setVal('cfg_developText', c.developText); setVal('cfg_devYes', c.devYesReply); setVal('cfg_devNo', c.devNoReply);
   setVal('cfg_letterBody', c.letterBody); setVal('cfg_yesReply', c.yesReply); setVal('cfg_finalNoReply', c.finalNoReply);
@@ -847,8 +876,6 @@ function collectDrawerForm() {
   CURRENT_CONFIG.firstImpText = getVal('cfg_firstImpText', "");
   CURRENT_CONFIG.nowImpTitle = getVal('cfg_nowImpTitle', "");
   CURRENT_CONFIG.nowImpText = getVal('cfg_nowImpText', "");
-  CURRENT_CONFIG.authorScoreVal = getVal('cfg_authorScoreVal', "520% 🚀");
-  CURRENT_CONFIG.authorScoreDesc = getVal('cfg_authorScoreDesc', "毫无疑问是满分心动！甚至爆表到了外太空～");
   CURRENT_CONFIG.meetText = getVal('cfg_meetText', "");
   CURRENT_CONFIG.meetYesReply = getVal('cfg_meetYes', "太棒啦！");
   CURRENT_CONFIG.meetNoReply = getVal('cfg_meetNo', "哈哈没关系！做网友也很酷！");
@@ -866,7 +893,6 @@ function collectDrawerForm() {
   });
 }
 
-/* 抽屉交互 */
 const customDrawer = document.getElementById('customDrawer');
 const answersDrawer = document.getElementById('answersDrawer');
 
@@ -890,11 +916,10 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
   const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
   
   navigator.clipboard.writeText(shareUrl).then(() => {
-    alert("🎉 TA 的专属心动链接已复制到剪贴板！\n发送给 TA，TA 能直接看到你给 TA 的心动值，并且能自己打分、翻牌真心话与回答问题！");
+    alert("🎉 TA 的专属心动链接已生成并复制到剪贴板！\n发给 TA，对方看到的就是你设定的具体心动分（" + CURRENT_CONFIG.authorScoreVal + "）！");
   }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
 });
 
-/* 查岗面板：查看 TA 打出的心动值与选项 */
 function renderAnswers() {
   const container = document.getElementById('answersContainer');
   const answers = StateService.getAnswers();
@@ -926,7 +951,6 @@ function renderAnswers() {
   container.innerHTML = html;
 }
 
-/* 问答挑战交互 */
 function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, questionTitle) {
   const yesBtn = document.getElementById(yesBtnId);
   const noBtn = document.getElementById(noBtnId);
@@ -964,28 +988,26 @@ function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, question
 setupPlayfulBtn('meetYesBtn', 'meetNoBtn', 'meetRow', 'meetYesReply', 'meetNoReply', '01. 深入认识一下');
 setupPlayfulBtn('devYesBtn', 'devNoBtn', 'devRow', 'devYesReply', 'devNoReply', '02. 进一步发展');
 
-/* 下方滑杆：TA 给你的心动值评分 */
+/* 被表白者滑动打分 */
 const viewerScoreSlider = document.getElementById('viewerScoreSlider');
 viewerScoreSlider.addEventListener('change', (e) => {
-  const v = e.target.value;
   if (isViewerMode) {
-    StateService.submitAnswer("TA 给你的心动印象分", `${v}%`);
+    StateService.submitAnswer("TA 给你的心动印象分", `${e.target.value}%`);
   }
 });
-
 viewerScoreSlider.addEventListener('input', (e) => {
   const v = parseInt(e.target.value);
-  const viewerScoreVal = document.getElementById('viewerScoreVal');
-  const viewerScoreDesc = document.getElementById('viewerScoreDesc');
+  const valEl = document.getElementById('viewerScoreVal');
+  const descEl = document.getElementById('viewerScoreDesc');
   if (v === 100) {
-    viewerScoreVal.textContent = "520% 🚀"; viewerScoreDesc.textContent = "毫无疑问是满分心动！甚至爆表到了外太空～";
+    valEl.textContent = "520% 🚀"; descEl.textContent = "毫无疑问是满分心动！甚至爆表到了外太空～";
     if (window.confetti) confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
   } else if (v >= 80) {
-    viewerScoreVal.textContent = v + "%"; viewerScoreDesc.textContent = "心动值持续攀升中，感觉非常棒！✨";
+    valEl.textContent = v + "%"; descEl.textContent = "心动值持续攀升中，感觉非常棒！✨";
   } else if (v >= 50) {
-    viewerScoreVal.textContent = v + "%"; viewerScoreDesc.textContent = "还可以继续多了解了解哦～";
+    valEl.textContent = v + "%"; descEl.textContent = "还可以继续多了解了解哦～";
   } else {
-    viewerScoreVal.textContent = v + "%"; viewerScoreDesc.textContent = "看来还需要继续加油展现魅力！💪";
+    valEl.textContent = v + "%"; descEl.textContent = "看来还需要继续加油展现魅力！💪";
   }
 });
 
@@ -1021,7 +1043,6 @@ envelope.addEventListener('click', () => {
   }, 450);
 });
 
-/* 最终表白回复 */
 const finalNoBtn = document.getElementById('noBtn');
 let finalDodge = 0;
 finalNoBtn.addEventListener('mouseenter', () => {
