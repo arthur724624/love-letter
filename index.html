@@ -583,6 +583,7 @@
 
 <!-- ============ 3. 双向心动值板块 ============ -->
 <section id="scoreSec">
+  <!-- 表白者端看到的单卡片模式 -->
   <div id="authorScoreSectionWrap">
     <div class="section-head">
       <div class="eyebrow serif">Rating For You</div>
@@ -597,6 +598,7 @@
     </div>
   </div>
 
+  <!-- 被表白者端看到的双卡片对比模式 -->
   <div id="viewerScoreSectionWrap" style="display:none;">
     <div class="section-head">
       <div class="eyebrow serif">Heartbeat Match</div>
@@ -773,6 +775,7 @@ function checkAccessMode() {
   if (room) CURRENT_ROOM_ID = room;
 
   if (viewData) {
+    // 【被表白者模式】：从 URL 解密数据
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
     document.getElementById('authorScoreSectionWrap').style.display = 'none';
@@ -782,6 +785,7 @@ function checkAccessMode() {
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
+    // 【表白者模式】：读取本地保存的草稿
     isViewerMode = false;
     document.getElementById('authorScoreSectionWrap').style.display = 'block';
     document.getElementById('viewerScoreSectionWrap').style.display = 'none';
@@ -801,7 +805,8 @@ function renderPage() {
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
   
-  const scoreNum = CURRENT_CONFIG.authorScoreNum !== undefined ? CURRENT_CONFIG.authorScoreNum : 100;
+  // 严格渲染心动值
+  const scoreNum = CURRENT_CONFIG.authorScoreNum !== undefined ? Number(CURRENT_CONFIG.authorScoreNum) : 100;
   const scoreVal = CURRENT_CONFIG.authorScoreVal || (scoreNum === 100 ? "520% 🚀" : scoreNum + "%");
   const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
   
@@ -810,6 +815,7 @@ function renderPage() {
     document.getElementById('authorLiveScoreDesc').textContent = scoreDesc;
     document.getElementById('authorScoreSlider').value = scoreNum;
   } else {
+    // 被表白者端：强行写入从 URL 解密出的具体数值与描述
     document.getElementById('authorScoreVal').textContent = scoreVal;
     document.getElementById('authorScoreDesc').textContent = scoreDesc;
   }
@@ -875,24 +881,25 @@ function renderPage() {
   }
 }
 
-/* 滑杆逻辑 */
+/* 滑杆实时逻辑 */
 const authorScoreSlider = document.getElementById('authorScoreSlider');
 function updateAuthorScore(v) {
-  let valText = v + "%";
+  const num = Number(v);
+  let valText = num + "%";
   let descText = "心动值持续攀升中，感觉非常棒！✨";
-  if (v === 100) {
+  if (num === 100) {
     valText = "520% 🚀";
     descText = "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
     if (window.confetti) confetti({ particleCount: 35, spread: 60, origin: { y: 0.6 } });
-  } else if (v >= 80) {
+  } else if (num >= 80) {
     descText = "心动值持续攀升中，根本停不下来～";
-  } else if (v >= 50) {
-    descText = "心动的感觉越来越强烈了～";
+  } else if (num >= 60) {
+    descText = "心动的感受越来越强烈了～";
   } else {
     descText = "只要看到你，心跳就会悄悄加速！";
   }
   
-  CURRENT_CONFIG.authorScoreNum = v;
+  CURRENT_CONFIG.authorScoreNum = num;
   CURRENT_CONFIG.authorScoreVal = valText;
   CURRENT_CONFIG.authorScoreDesc = descText;
   
@@ -900,15 +907,14 @@ function updateAuthorScore(v) {
   document.getElementById('authorLiveScoreDesc').textContent = descText;
   localStorage.setItem('MY_CONFESS_CONFIG_FINAL', JSON.stringify(CURRENT_CONFIG));
 }
-authorScoreSlider.addEventListener('input', (e) => updateAuthorScore(parseInt(e.target.value)));
+authorScoreSlider.addEventListener('input', (e) => updateAuthorScore(e.target.value));
 
-/* 免图床云端图片上传核心：自动上传至免费公共图床获取短链接 */
+/* 免图床云端图片上传核心：自动上传至公共 CDN 生成短 URL */
 function uploadToFreeImageCDN(file, onProgress, onSuccess, onError) {
   onProgress("正在自动上传照片到云端...");
   const formData = new FormData();
   formData.append('image', file);
   
-  // 采用免 Token 公共 CDN 接口，无需手动配置 key
   fetch('https://api.imgbb.com/1/upload?key=6d207e02198a847aa5ad3ac2292fc142', {
     method: 'POST',
     body: formData
@@ -921,8 +927,7 @@ function uploadToFreeImageCDN(file, onProgress, onSuccess, onError) {
       throw new Error("Upload failed");
     }
   })
-  .catch(err => {
-    // 备用极速图床
+  .catch(() => {
     const altFormData = new FormData();
     altFormData.append('file', file);
     fetch('https://tmp-cli.animedb.cn/upload', {
@@ -958,7 +963,7 @@ function initDrawerForm() {
     container.appendChild(box);
   });
 
-  // 放映厅照片直接选择与上传
+  // 放映厅照片
   const memContainer = document.getElementById('memoriesInputsContainer');
   memContainer.innerHTML = '';
   c.memories.forEach((m, idx) => {
@@ -1022,15 +1027,18 @@ function collectDrawerForm() {
   CURRENT_CONFIG.yesReply = getVal('cfg_yesReply', "");
   CURRENT_CONFIG.finalNoReply = getVal('cfg_finalNoReply', "千万别有压力！继续做开心果！");
 
-  const currentSliderVal = parseInt(document.getElementById('authorScoreSlider').value);
+  // 严格抓取当前滑杆实际数值并注入
+  const currentSliderVal = document.getElementById('authorScoreSlider').value;
   updateAuthorScore(currentSliderVal);
 
+  // 收集理由
   const titles = document.querySelectorAll('.r-title');
   const texts = document.querySelectorAll('.r-text');
   titles.forEach((t, i) => {
     CURRENT_CONFIG.reasons[i] = { title: t.value.trim(), text: texts[i].value.trim() };
   });
 
+  // 收集放映厅照片
   const mcaps = document.querySelectorAll('.m-cap');
   const mimgUrls = document.querySelectorAll('.m-img-url');
   mcaps.forEach((c, i) => {
@@ -1051,16 +1059,16 @@ document.getElementById('openAnswersBtn').addEventListener('click', () => { rend
 document.getElementById('closeAnswersBtn').addEventListener('click', () => answersDrawer.classList.remove('open'));
 document.getElementById('refreshAnswersBtn').addEventListener('click', () => renderAnswers());
 
-/* 一键恢复初始模板 */
+/* 一键恢复初始模板（彻底重置包括心动值滑杆与放映厅照片） */
 document.getElementById('resetDefaultBtn').addEventListener('click', () => {
-  if (confirm("确定要恢复默认初始模板吗？当前保存的草稿和心动值将被彻底重置。")) {
+  if (confirm("确定要恢复默认初始模板吗？包括心动值和导入的照片都会恢复成最初状态。")) {
     localStorage.removeItem('MY_CONFESS_CONFIG_FINAL');
     CURRENT_CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
     document.getElementById('authorScoreSlider').value = 100;
     updateAuthorScore(100);
     initDrawerForm();
     renderPage();
-    alert("🔄 已成功恢复为纯净初始模板（心动值已归位 100%）！");
+    alert("🔄 已成功恢复为纯净初始模板（所有内容、照片与心动值均已归位）！");
   }
 });
 
@@ -1072,6 +1080,7 @@ document.getElementById('saveAndApplyBtn').addEventListener('click', () => {
 });
 
 document.getElementById('generateShareLinkBtn').addEventListener('click', () => {
+  // 确保滑杆数值与所有表单数据完整提取
   collectDrawerForm();
   localStorage.setItem('MY_CONFESS_CONFIG_FINAL', JSON.stringify(CURRENT_CONFIG));
   
@@ -1079,7 +1088,7 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
   const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
   
   navigator.clipboard.writeText(shareUrl).then(() => {
-    alert("🎉 TA 的专属心动链接已生成！\n短链接安全生成成功，对方打开绝不会再报 I/O error！");
+    alert("🎉 TA 的专属心动链接已生成！\n当前设定的心动分【" + CURRENT_CONFIG.authorScoreVal + "】与照片已成功打包进专属链接中！");
   }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
 });
 
