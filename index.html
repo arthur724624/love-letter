@@ -65,7 +65,7 @@
     background-size: 26px 26px;
   }
 
-  /* 顶部工具栏（仅表白者端可见） */
+  /* 顶部工具栏 */
   #topBar {
     position: fixed; left: 24px; top: 22px;
     z-index: 1000;
@@ -88,7 +88,7 @@
     justify-content: center; background: #FFF; font-size: 1.2rem;
   }
 
-  /* 抽屉面板通用 */
+  /* 抽屉面板 */
   .custom-drawer {
     position: fixed; top: 0; right: -500px; width: 100%; max-width: 480px; height: 100vh;
     background: #FFFDF9; border-left: 3px solid var(--dark-ink);
@@ -191,22 +191,30 @@
   .compare-card h3 { font-size: 1.35rem; margin-bottom: 12px; }
   .compare-card p { font-size: 1.05rem; color: #4A5568; line-height: 1.85; }
 
-  /* 印象分互动 */
+  /* =========================================================
+     双向心动对比展示卡
+     ========================================================= */
+  .score-dual-container {
+    max-width: 720px; margin: 0 auto;
+    display: flex; flex-direction: column; gap: 22px;
+  }
   .score-box {
-    max-width: 600px; margin: 0 auto;
     background: var(--card-glass); backdrop-filter: blur(14px);
     border: 3px solid var(--dark-ink); border-radius: 30px;
-    padding: 40px 32px; box-shadow: 6px 8px 0 var(--dark-ink); text-align: center;
+    padding: 34px 28px; box-shadow: 6px 8px 0 var(--dark-ink); text-align: center;
+  }
+  .score-author-box {
+    background: #FFFBF0; border-color: var(--shin-yellow);
   }
   .score-display {
-    font-size: 3.2rem; font-weight: 900; color: var(--shin-red);
-    margin: 14px 0; font-family: 'Baloo 2', cursive;
+    font-size: 3rem; font-weight: 900; color: var(--shin-red);
+    margin: 10px 0; font-family: 'Baloo 2', cursive;
   }
   .score-slider {
-    width: 100%; max-width: 440px; margin: 20px auto;
+    width: 100%; max-width: 440px; margin: 16px auto;
     accent-color: var(--shin-red); height: 10px; cursor: pointer;
   }
-  .score-comment { font-size: 1.1rem; font-weight: 700; color: var(--dark-ink); margin-top: 10px; min-height: 32px; }
+  .score-comment { font-size: 1.05rem; font-weight: 700; color: var(--dark-ink); min-height: 28px; }
 
   /* 问答挑战 */
   .challenge-grid {
@@ -240,7 +248,7 @@
   .reply-yes { background: #E6F8F0; color: var(--shin-green); border: 2px dashed var(--shin-green); }
   .reply-no { background: #F8FAFC; color: #64748B; border: 2px dashed #CBD5E1; }
 
-  /* 发起人端禁用提示 */
+  /* 禁用与权限样式 */
   .disabled-preview {
     opacity: 0.65;
     cursor: not-allowed !important;
@@ -249,14 +257,10 @@
     pointer-events: none !important;
   }
   .preview-lock-tag {
-    font-size: 0.8rem;
-    font-weight: 800;
-    color: var(--shin-purple);
-    background: #EFEAF8;
-    padding: 6px 14px;
-    border-radius: 20px;
-    display: inline-block;
-    margin-top: 10px;
+    font-size: 0.8rem; font-weight: 800;
+    color: var(--shin-purple); background: #EFEAF8;
+    padding: 6px 14px; border-radius: 20px;
+    display: inline-block; margin-top: 10px;
     border: 1px dashed var(--shin-purple);
   }
 
@@ -385,7 +389,7 @@
 <div id="scrollProgress"></div>
 <div id="pixelGrid"></div>
 
-<!-- 顶部工具栏（仅表白者端可见） -->
+<!-- 顶部工具栏（仅表白者可见） -->
 <div id="topBar">
   <button class="control-btn btn-edit" id="openDrawerBtn">
     <span>✏️ 专属表白工坊</span>
@@ -423,6 +427,14 @@
       <label>现在印象标题与内容</label>
       <input type="text" class="form-input" id="cfg_nowImpTitle" placeholder="现在印象小标题">
       <textarea class="form-textarea" id="cfg_nowImpText"></textarea>
+    </div>
+
+    <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
+    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">你对 TA 的心动印象分设定</div>
+    <div class="form-group">
+      <label>你给 TA 的心动数值与文案</label>
+      <input type="text" class="form-input" id="cfg_authorScoreVal" placeholder="例如：520% 或 100%">
+      <input type="text" class="form-input" id="cfg_authorScoreDesc" placeholder="例如：毫无疑问是满分心动！甚至爆表到了外太空～ 🚀">
     </div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
@@ -465,7 +477,7 @@
   </div>
 </div>
 
-<!-- ============ 2. 查岗面板：查看 TA 的心动值与选择 ============ -->
+<!-- ============ 2. 查岗面板 ============ -->
 <div class="custom-drawer" id="answersDrawer">
   <div class="drawer-head">
     <h3>📋 TA 的答案与心动值记录</h3>
@@ -523,18 +535,30 @@
   </div>
 </section>
 
-<!-- ============ 3. 印象分互动（双方都可以滑动/查看） ============ -->
+<!-- ============ 3. 双向心动值板块 ============ -->
 <section id="scoreSec">
   <div class="section-head">
-    <div class="eyebrow serif">Rating For You</div>
-    <h2 id="scoreTitle">心动印象分</h2>
-    <p id="scoreDesc">拖动滑杆设定/查看心动数值 📈</p>
+    <div class="eyebrow serif">Heartbeat Match</div>
+    <h2>双向心动印象分</h2>
+    <p>看看我对你的心动，也留下你给我的评分吧 📈</p>
   </div>
-  <div class="score-box">
-    <div style="font-weight:800;color:#6C768A;" id="scoreLabel">当前心动印象值</div>
-    <div class="score-display" id="scoreValue">100%</div>
-    <input type="range" class="score-slider" id="scoreSlider" min="0" max="100" value="100">
-    <div class="score-comment" id="scoreComment">毫无疑问是满分心动！甚至爆表到了外太空～ 🚀</div>
+  
+  <div class="score-dual-container">
+    <!-- 上方：你给 TA 的心动值（TA 只能看不能改） -->
+    <div class="score-box score-author-box">
+      <div style="font-weight:900;color:var(--shin-purple);font-size:1.05rem;" id="authorScoreTitle">💌 我给你的心动值（满分心动）</div>
+      <div class="score-display" id="authorScoreVal">520% 🚀</div>
+      <div class="score-comment" id="authorScoreDesc">毫无疑问是满分心动！甚至爆表到了外太空～</div>
+    </div>
+
+    <!-- 下方：TA 给你的心动值（TA 亲自滑动） -->
+    <div class="score-box">
+      <div style="font-weight:900;color:var(--dark-ink);font-size:1.05rem;" id="viewerScoreTitle">✨ 你给我的心动值（拖动滑杆给我打分）</div>
+      <div class="score-display" id="viewerScoreVal">100%</div>
+      <input type="range" class="score-slider" id="viewerScoreSlider" min="0" max="100" value="100">
+      <div class="score-comment" id="viewerScoreDesc">拖动滑杆设定你的心动数值吧～</div>
+      <div id="scoreLockTag" class="preview-lock-tag" style="display:none;margin-top:12px;">🔒 发起人预览态：此滑杆供 TA 打开链接后打分</div>
+    </div>
   </div>
 </section>
 
@@ -571,7 +595,7 @@
   </div>
 </section>
 
-<!-- ============ 5. 理由（仅 TA 可点开翻牌） ============ -->
+<!-- ============ 5. 理由 ============ -->
 <section id="reasons">
   <div class="section-head">
     <div class="eyebrow serif">These are from my heart</div>
@@ -594,7 +618,7 @@
   <div class="reel" id="reel"></div>
 </section>
 
-<!-- ============ 7. 蓄力挑战 ============ -->
+<!-- ============ 7. 蓄力 ============ -->
 <section id="game">
   <div class="section-head">
     <div class="eyebrow serif">Power Up Challenge</div>
@@ -608,7 +632,7 @@
   </button>
 </section>
 
-<!-- ============ 8. 表白信（仅 TA 可拆信与选择） ============ -->
+<!-- ============ 8. 表白信 ============ -->
 <section id="letter">
   <div class="section-head">
     <div class="eyebrow serif">Unlocked Secret</div>
@@ -644,6 +668,8 @@ const DEFAULT_CONFIG = {
   firstImpText: "刚认识你的时候，总觉得你文静又带着点距离感，连跟你说话都要在心里打好几遍草稿。",
   nowImpTitle: "原来是个可可爱爱的捣蛋鬼",
   nowImpText: "熟悉之后才发现，你笑起来眼睛会弯成月牙，吃好吃的会摇头晃脑，完全就是元气小可爱！",
+  authorScoreVal: "520% 🚀",
+  authorScoreDesc: "毫无疑问是满分心动！甚至爆表到了外太空～",
   meetText: "想知道你的喜怒哀乐、喜欢吃什么口味的冰淇淋，以及所有关于你的可爱细节。",
   developText: "不仅仅是分享日常的朋友，更想成为那个可以正大光明牵你的手、陪你很久的人。",
   meetYesReply: "太棒啦！新的快乐之旅开启 🎈",
@@ -673,7 +699,7 @@ let CURRENT_CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 let CURRENT_ROOM_ID = localStorage.getItem('MY_ROOM_ID') || ('room_' + Math.random().toString(36).substr(2, 9));
 localStorage.setItem('MY_ROOM_ID', CURRENT_ROOM_ID);
 
-/* 双向状态存储服务 */
+/* 双向状态存储 */
 const StateService = {
   submitAnswer(key, value) {
     const localAnswers = JSON.parse(localStorage.getItem('ANSWERS_' + CURRENT_ROOM_ID) || '{}');
@@ -693,20 +719,16 @@ function checkAccessMode() {
   if (room) CURRENT_ROOM_ID = room;
 
   if (viewData) {
-    // 【被表白者模式】：完全移除顶部工具栏，全部卡片/选项解锁供 TA 操作
+    // 【被表白者查看模式】：完全移除顶部工具栏，全部卡片/选项解锁供 TA 操作
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
-    document.getElementById('scoreTitle').textContent = "你对我的心动印象分";
-    document.getElementById('scoreDesc').textContent = "拖动滑杆设定你在心里给我的心动数值 📈";
     try {
       const decoded = JSON.parse(decodeURIComponent(escape(atob(viewData))));
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
-    // 【表白者模式】：表白者可使用专属表白工坊与心动滑杆，其余互动锁定保护
+    // 【表白者模式】：表白者可使用专属表白工坊，预览锁定其余互动
     isViewerMode = false;
-    document.getElementById('scoreTitle').textContent = "我对你的心动印象分";
-    document.getElementById('scoreDesc').textContent = "你在我心里的心动数值（你拖动设定后 TA 能看到）📈";
     const localSaved = localStorage.getItem('MY_CONFESS_CONFIG_FINAL');
     if (localSaved) {
       try { CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, JSON.parse(localSaved)); } catch(e){}
@@ -722,6 +744,11 @@ function renderPage() {
   document.getElementById('firstImpText').textContent = CURRENT_CONFIG.firstImpText;
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
+  
+  // 渲染你给 TA 的心动值
+  document.getElementById('authorScoreVal').textContent = CURRENT_CONFIG.authorScoreVal || "520% 🚀";
+  document.getElementById('authorScoreDesc').textContent = CURRENT_CONFIG.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～";
+  
   document.getElementById('meetText').textContent = CURRENT_CONFIG.meetText;
   document.getElementById('developText').textContent = CURRENT_CONFIG.developText;
   document.getElementById('letterBody').textContent = CURRENT_CONFIG.letterBody;
@@ -746,10 +773,10 @@ function renderPage() {
       </div>
     `;
     
-    // 权限控制：仅被表白者可以点击翻开真心话卡片
+    // 权限控制：仅被表白者可以翻开
     card.addEventListener('click', () => {
       if (!isViewerMode) {
-        alert("🔒 发起人预览态：翻开真心话卡片仅限 TA 收到链接后点击开启哦！");
+        alert("🔒 发起人预览态：翻开真心话卡片仅限 TA 收到链接后开启哦！");
         return;
       }
       card.classList.toggle('open');
@@ -772,17 +799,21 @@ function renderPage() {
     document.getElementById('devRow').classList.add('disabled-preview');
     document.getElementById('answerRow').classList.add('disabled-preview');
     document.getElementById('reasonGrid').classList.add('disabled-preview');
+    document.getElementById('viewerScoreSlider').disabled = true;
     document.getElementById('meetLockTag').style.display = 'inline-block';
     document.getElementById('devLockTag').style.display = 'inline-block';
     document.getElementById('reasonsLockTag').style.display = 'block';
+    document.getElementById('scoreLockTag').style.display = 'inline-block';
   } else {
     document.getElementById('meetRow').classList.remove('disabled-preview');
     document.getElementById('devRow').classList.remove('disabled-preview');
     document.getElementById('answerRow').classList.remove('disabled-preview');
     document.getElementById('reasonGrid').classList.remove('disabled-preview');
+    document.getElementById('viewerScoreSlider').disabled = false;
     document.getElementById('meetLockTag').style.display = 'none';
     document.getElementById('devLockTag').style.display = 'none';
     document.getElementById('reasonsLockTag').style.display = 'none';
+    document.getElementById('scoreLockTag').style.display = 'none';
   }
 }
 
@@ -792,6 +823,8 @@ function initDrawerForm() {
   setVal('cfg_herName', c.herName); setVal('cfg_yourName', c.yourName);
   setVal('cfg_firstImpTitle', c.firstImpTitle); setVal('cfg_firstImpText', c.firstImpText);
   setVal('cfg_nowImpTitle', c.nowImpTitle); setVal('cfg_nowImpText', c.nowImpText);
+  setVal('cfg_authorScoreVal', c.authorScoreVal || "520% 🚀");
+  setVal('cfg_authorScoreDesc', c.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～");
   setVal('cfg_meetText', c.meetText); setVal('cfg_meetYes', c.meetYesReply); setVal('cfg_meetNo', c.meetNoReply);
   setVal('cfg_developText', c.developText); setVal('cfg_devYes', c.devYesReply); setVal('cfg_devNo', c.devNoReply);
   setVal('cfg_letterBody', c.letterBody); setVal('cfg_yesReply', c.yesReply); setVal('cfg_finalNoReply', c.finalNoReply);
@@ -814,6 +847,8 @@ function collectDrawerForm() {
   CURRENT_CONFIG.firstImpText = getVal('cfg_firstImpText', "");
   CURRENT_CONFIG.nowImpTitle = getVal('cfg_nowImpTitle', "");
   CURRENT_CONFIG.nowImpText = getVal('cfg_nowImpText', "");
+  CURRENT_CONFIG.authorScoreVal = getVal('cfg_authorScoreVal', "520% 🚀");
+  CURRENT_CONFIG.authorScoreDesc = getVal('cfg_authorScoreDesc', "毫无疑问是满分心动！甚至爆表到了外太空～");
   CURRENT_CONFIG.meetText = getVal('cfg_meetText', "");
   CURRENT_CONFIG.meetYesReply = getVal('cfg_meetYes', "太棒啦！");
   CURRENT_CONFIG.meetNoReply = getVal('cfg_meetNo', "哈哈没关系！做网友也很酷！");
@@ -855,11 +890,11 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
   const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
   
   navigator.clipboard.writeText(shareUrl).then(() => {
-    alert("🎉 TA 的专属心动链接已复制到剪贴板！\n发送给 TA 打开，TA 能自己滑动心动值、点开理由卡片与回答问题，你可以在后台随时查看到 TA 的选择！");
+    alert("🎉 TA 的专属心动链接已复制到剪贴板！\n发送给 TA，TA 能直接看到你给 TA 的心动值，并且能自己打分、翻牌真心话与回答问题！");
   }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
 });
 
-/* 查岗面板：查看 TA 的心动值与答卷 */
+/* 查岗面板：查看 TA 打出的心动值与选项 */
 function renderAnswers() {
   const container = document.getElementById('answersContainer');
   const answers = StateService.getAnswers();
@@ -929,26 +964,28 @@ function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, question
 setupPlayfulBtn('meetYesBtn', 'meetNoBtn', 'meetRow', 'meetYesReply', 'meetNoReply', '01. 深入认识一下');
 setupPlayfulBtn('devYesBtn', 'devNoBtn', 'devRow', 'devYesReply', 'devNoReply', '02. 进一步发展');
 
-/* 心动印象分滑杆：双方都可以滑动，被表白者滑动会自动存回后台 */
-const scoreSlider = document.getElementById('scoreSlider');
-scoreSlider.addEventListener('change', (e) => {
+/* 下方滑杆：TA 给你的心动值评分 */
+const viewerScoreSlider = document.getElementById('viewerScoreSlider');
+viewerScoreSlider.addEventListener('change', (e) => {
   const v = e.target.value;
   if (isViewerMode) {
     StateService.submitAnswer("TA 给你的心动印象分", `${v}%`);
-  } else {
-    StateService.submitAnswer("你给 TA 的心动初始值", `${v}%`);
   }
 });
 
-scoreSlider.addEventListener('input', (e) => {
+viewerScoreSlider.addEventListener('input', (e) => {
   const v = parseInt(e.target.value);
-  const scoreValue = document.getElementById('scoreValue');
-  const scoreComment = document.getElementById('scoreComment');
+  const viewerScoreVal = document.getElementById('viewerScoreVal');
+  const viewerScoreDesc = document.getElementById('viewerScoreDesc');
   if (v === 100) {
-    scoreValue.textContent = "520% 🚀"; scoreComment.textContent = "毫无疑问是满分心动！甚至爆表到了外太空～";
+    viewerScoreVal.textContent = "520% 🚀"; viewerScoreDesc.textContent = "毫无疑问是满分心动！甚至爆表到了外太空～";
     if (window.confetti) confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
+  } else if (v >= 80) {
+    viewerScoreVal.textContent = v + "%"; viewerScoreDesc.textContent = "心动值持续攀升中，感觉非常棒！✨";
+  } else if (v >= 50) {
+    viewerScoreVal.textContent = v + "%"; viewerScoreDesc.textContent = "还可以继续多了解了解哦～";
   } else {
-    scoreValue.textContent = v + "%"; scoreComment.textContent = "心动值持续攀升中，根本停不下来～";
+    viewerScoreVal.textContent = v + "%"; viewerScoreDesc.textContent = "看来还需要继续加油展现魅力！💪";
   }
 });
 
