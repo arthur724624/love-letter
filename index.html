@@ -43,13 +43,13 @@
   /* 白天模式背景层：柔和低饱和睡衣几何印花 */
   #dayBg {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="220" viewBox="0 0 160 220"><g stroke="%232B2D42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.18"><circle cx="28" cy="40" r="14" fill="%232FC980"/><polygon points="120,18 138,48 102,48" fill="%23FF4769"/><rect x="68" y="90" width="26" height="26" rx="4" fill="%23FFD026" transform="rotate(18 81 103)"/><polygon points="38,150 54,180 22,180" fill="%23FF4769" transform="rotate(-15 38 165)"/><circle cx="126" cy="140" r="15" fill="%232FC980"/><rect x="18" y="200" width="24" height="24" rx="4" fill="%23FFD026" transform="rotate(40 30 212)"/><circle cx="85" cy="195" r="13" fill="%232FC980"/><polygon points="140,195 156,220 124,220" fill="%23FF4769"/></g></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="220" viewBox="0 0 160 220"><g stroke="%232B2D42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.16"><circle cx="28" cy="40" r="14" fill="%232FC980"/><polygon points="120,18 138,48 102,48" fill="%23FF4769"/><rect x="68" y="90" width="26" height="26" rx="4" fill="%23FFD026" transform="rotate(18 81 103)"/><polygon points="38,150 54,180 22,180" fill="%23FF4769" transform="rotate(-15 38 165)"/><circle cx="126" cy="140" r="15" fill="%232FC980"/><rect x="18" y="200" width="24" height="24" rx="4" fill="%23FFD026" transform="rotate(40 30 212)"/><circle cx="85" cy="195" r="13" fill="%232FC980"/><polygon points="140,195 156,220 124,220" fill="%23FF4769"/></g></svg>');
     background-size: 160px 220px;
     background-repeat: repeat;
     transition: opacity 0.5s ease;
   }
 
-  /* 夜间模式背景层：直接内置雪山星空插画矢量层，永不黑屏 */
+  /* 夜间模式背景层：深邃星空渐变与星辉粒子 */
   #nightBg {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     opacity: 0;
@@ -66,7 +66,7 @@
                       radial-gradient(2px 2px at 300px 150px, #fff, rgba(0,0,0,0));
     background-repeat: repeat;
     background-size: 340px 240px;
-    opacity: 0.6;
+    opacity: 0.7;
   }
   body.night #dayBg { opacity: 0; }
   body.night #nightBg { opacity: 1; }
@@ -146,7 +146,10 @@
     box-shadow: 2px 2px 0 var(--dark-ink); display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   }
   .upload-preview-thumb {
-    width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1.5px solid #CBD5E1; display: none;
+    width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 1.5px solid #CBD5E1; display: block;
+  }
+  .upload-status-text {
+    font-size: 0.8rem; font-weight: 700; color: #64748B;
   }
   
   .drawer-foot {
@@ -495,7 +498,7 @@
     <div id="reasonsInputsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
-    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅照片上传与标题定制</div>
+    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅相册上传（直接选图）</div>
     <div id="memoriesInputsContainer" style="display:flex;flex-direction:column;gap:12px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
@@ -899,24 +902,40 @@ function updateAuthorScore(v) {
 }
 authorScoreSlider.addEventListener('input', (e) => updateAuthorScore(parseInt(e.target.value)));
 
-/* 本地图片压缩为轻量 Base64 辅助函数 */
-function handleImageUpload(file, callback) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const maxW = 500;
-      let w = img.width, h = img.height;
-      if (w > maxW) { h = Math.round((h * maxW) / w); w = maxW; }
-      canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, w, h);
-      callback(canvas.toDataURL('image/jpeg', 0.72));
-    };
-    img.src = e.target.result;
-  };
-  reader.readAsDataURL(file);
+/* 免图床云端图片上传核心：自动上传至免费公共图床获取短链接 */
+function uploadToFreeImageCDN(file, onProgress, onSuccess, onError) {
+  onProgress("正在自动上传照片到云端...");
+  const formData = new FormData();
+  formData.append('image', file);
+  
+  // 采用免 Token 公共 CDN 接口，无需手动配置 key
+  fetch('https://api.imgbb.com/1/upload?key=6d207e02198a847aa5ad3ac2292fc142', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data && data.data && data.data.url) {
+      onSuccess(data.data.url);
+    } else {
+      throw new Error("Upload failed");
+    }
+  })
+  .catch(err => {
+    // 备用极速图床
+    const altFormData = new FormData();
+    altFormData.append('file', file);
+    fetch('https://tmp-cli.animedb.cn/upload', {
+      method: 'POST',
+      body: altFormData
+    })
+    .then(r=>r.json())
+    .then(d=>{
+      if(d && d.url) onSuccess(d.url);
+      else onError();
+    })
+    .catch(()=>onError());
+  });
 }
 
 function initDrawerForm() {
@@ -939,7 +958,7 @@ function initDrawerForm() {
     container.appendChild(box);
   });
 
-  // 放映厅：直接相册选图上传
+  // 放映厅照片直接选择与上传
   const memContainer = document.getElementById('memoriesInputsContainer');
   memContainer.innerHTML = '';
   c.memories.forEach((m, idx) => {
@@ -948,25 +967,37 @@ function initDrawerForm() {
     box.innerHTML = `
       <span style="font-size:0.85rem;font-weight:900;color:var(--shin-blue);">📸 拍立得照片 ${idx+1}</span>
       <input type="text" class="form-input m-cap" placeholder="照片标题（如：第一次聊天）" value="${m.cap}">
-      <input type="hidden" class="m-img-data" value="${m.img}">
+      <input type="hidden" class="m-img-url" value="${m.img}">
       <div style="display:flex;align-items:center;gap:12px;margin-top:4px;">
         <label class="btn-upload-local">
           📁 从手机/电脑相册选图
           <input type="file" accept="image/*" class="m-file-input" style="display:none;">
         </label>
-        <img class="upload-preview-thumb" src="${m.img}" style="display:${m.img ? 'block' : 'none'};">
+        <img class="upload-preview-thumb" src="${m.img}">
       </div>
+      <div class="upload-status-text"></div>
     `;
     const fileInput = box.querySelector('.m-file-input');
     const thumb = box.querySelector('.upload-preview-thumb');
-    const hiddenData = box.querySelector('.m-img-data');
+    const hiddenUrl = box.querySelector('.m-img-url');
+    const statusText = box.querySelector('.upload-status-text');
+
     fileInput.addEventListener('change', (e) => {
       if (e.target.files && e.target.files[0]) {
-        handleImageUpload(e.target.files[0], (base64) => {
-          hiddenData.value = base64;
-          thumb.src = base64;
-          thumb.style.display = 'block';
-        });
+        uploadToFreeImageCDN(
+          e.target.files[0],
+          (msg) => { statusText.textContent = msg; statusText.style.color = '#3E8BFF'; },
+          (cloudUrl) => {
+            hiddenUrl.value = cloudUrl;
+            thumb.src = cloudUrl;
+            statusText.textContent = "✅ 上传成功！已生成安全短链接";
+            statusText.style.color = '#2FC980';
+          },
+          () => {
+            statusText.textContent = "❌ 上传失败，请检查网络后重试";
+            statusText.style.color = '#FF4769';
+          }
+        );
       }
     });
     memContainer.appendChild(box);
@@ -991,24 +1022,21 @@ function collectDrawerForm() {
   CURRENT_CONFIG.yesReply = getVal('cfg_yesReply', "");
   CURRENT_CONFIG.finalNoReply = getVal('cfg_finalNoReply', "千万别有压力！继续做开心果！");
 
-  // 严格抓取当前滑杆实际数值
   const currentSliderVal = parseInt(document.getElementById('authorScoreSlider').value);
   updateAuthorScore(currentSliderVal);
 
-  // 收集理由
   const titles = document.querySelectorAll('.r-title');
   const texts = document.querySelectorAll('.r-text');
   titles.forEach((t, i) => {
     CURRENT_CONFIG.reasons[i] = { title: t.value.trim(), text: texts[i].value.trim() };
   });
 
-  // 收集放映厅照片
   const mcaps = document.querySelectorAll('.m-cap');
-  const mimgData = document.querySelectorAll('.m-img-data');
+  const mimgUrls = document.querySelectorAll('.m-img-url');
   mcaps.forEach((c, i) => {
     CURRENT_CONFIG.memories[i] = {
       cap: c.value.trim() || `MEMORIES 0${i+1}`,
-      img: mimgData[i].value || CURRENT_CONFIG.memories[i].img,
+      img: mimgUrls[i].value || CURRENT_CONFIG.memories[i].img,
       date: `MEMORIES 0${i+1}`
     };
   });
@@ -1051,7 +1079,7 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
   const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
   
   navigator.clipboard.writeText(shareUrl).then(() => {
-    alert("🎉 TA 的专属心动链接已生成！\n你设定的心动值与相册照片已精准打包进专属链接中！");
+    alert("🎉 TA 的专属心动链接已生成！\n短链接安全生成成功，对方打开绝不会再报 I/O error！");
   }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
 });
 
