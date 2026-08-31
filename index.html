@@ -364,7 +364,7 @@
   .polaroid .date { font-size: 0.82rem; font-weight: 700; color: #8C96A8; margin-top: 4px; }
 
   /* =========================================================
-     蓄力挑战：彻底剔除粉色底框 + 独立小新与实体爱心发射台
+     蓄力挑战：4 项核心视觉手感与打击反馈机制
      ========================================================= */
   #game {
     text-align: center;
@@ -382,42 +382,70 @@
     .power-battle-stage { gap: 20px; }
   }
 
-  /* 左侧：粉色竖向能量柱 */
+  /* 1. 左侧竖向能量柱与微震颤受击机制 */
   .vertical-meter-wrap {
     display: flex; flex-direction: column; align-items: center; gap: 14px;
+    position: relative;
   }
   .vertical-meter-track {
     width: 44px; height: 320px; background: #FFF;
     border: 3.5px solid var(--dark-ink); border-radius: 25px;
     position: relative; box-shadow: 5px 6px 0 var(--dark-ink);
     display: flex; flex-direction: column-reverse; padding: 4px;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
   }
+  .vertical-meter-track.hit-punch {
+    animation: trackPunch 0.16s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  }
+  @keyframes trackPunch {
+    0% { transform: scale(1) translateX(0); }
+    35% { transform: scale(1.08, 0.94) translateX(-8px); box-shadow: 0 0 20px rgba(255, 71, 105, 0.9); }
+    100% { transform: scale(1) translateX(0); }
+  }
+
+  /* 2. 非线性弹簧增长 (Spring Easing) */
   .vertical-meter-fill {
     width: 100%; height: 0%; border-radius: 20px;
     background: linear-gradient(180deg, #FF758C 0%, #FF7EB3 50%, #FF4769 100%);
-    box-shadow: inset 0 0 12px rgba(255,255,255,0.6);
-    transition: height 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: inset 0 0 12px rgba(255,255,255,0.7), 0 0 10px rgba(255, 101, 132, 0.5);
+    transition: height 0.28s cubic-bezier(0.18, 1.45, 0.35, 1);
     position: relative;
   }
+
+  /* 3. 顶端爆发闪光与跳动心标 (Liquid-top Burst & Flash) */
   .meter-indicator-heart {
     position: absolute; top: -18px; left: 50%;
     transform: translateX(-50%); font-size: 1.6rem;
-    filter: drop-shadow(0 4px 6px rgba(255, 71, 105, 0.45));
-    animation: heartPulse 0.6s infinite alternate;
+    filter: drop-shadow(0 4px 6px rgba(255, 71, 105, 0.5));
+    animation: heartPulse 0.6s infinite alternate ease-in-out;
     pointer-events: none;
+  }
+  .meter-indicator-heart.hit-flash {
+    animation: heartFlash 0.25s ease-out;
+  }
+  @keyframes heartFlash {
+    0% { transform: translateX(-50%) scale(1.85); filter: drop-shadow(0 0 18px #FFF) brightness(1.6); }
+    100% { transform: translateX(-50%) scale(1); filter: drop-shadow(0 4px 6px rgba(255, 71, 105, 0.5)); }
   }
   @keyframes heartPulse {
     from { transform: translateX(-50%) scale(1); }
-    to { transform: translateX(-50%) scale(1.35); }
+    to { transform: translateX(-50%) scale(1.3); }
   }
 
+  /* 4. 数值跳动强调 (Number Pop Animation) */
   .meter-pct-badge {
     font-size: 1.25rem; font-weight: 900; color: var(--shin-red);
     background: #FFF; padding: 6px 14px; border-radius: 16px;
     border: 2.5px solid var(--dark-ink); box-shadow: 3px 3px 0 var(--dark-ink);
+    transition: transform 0.15s cubic-bezier(0.18, 1.6, 0.35, 1), box-shadow 0.15s ease;
+  }
+  .meter-pct-badge.pop {
+    transform: scale(1.45);
+    box-shadow: 0 0 16px rgba(255, 71, 105, 0.7);
+    color: #FF385C;
   }
 
-  /* 右侧：纯净小新与独立爱心发射台（无粉色方块底） */
+  /* 5. 按钮形变与回弹反馈 (Scale & Bounce) */
   .shin-cannon-wrap {
     position: relative; display: flex; flex-direction: column; align-items: center;
     cursor: pointer;
@@ -427,24 +455,21 @@
     display: flex; align-items: center; justify-content: center;
     background: transparent;
   }
-  
-  /* 纯净小新（去除自带爱心与长方形背景） */
   .shin-body-canvas {
     width: 180px; height: 240px;
     display: flex; align-items: center; justify-content: center;
-    transition: transform 0.08s ease;
+    transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   .shin-body-canvas svg {
     width: 100%; height: 100%;
     filter: drop-shadow(0 10px 18px rgba(255, 71, 105, 0.25));
   }
-
-  /* 独立的手指爱心（悬浮律动） */
   .shin-hand-heart {
     position: absolute; left: 16px; top: 76px;
     font-size: 2.2rem; cursor: pointer;
     filter: drop-shadow(0 4px 8px rgba(255, 71, 105, 0.6));
     animation: handHeartFloat 0.7s infinite alternate ease-in-out;
+    transition: transform 0.12s ease;
   }
   @keyframes handHeartFloat {
     from { transform: scale(1) translateY(0); }
@@ -457,18 +482,38 @@
     border-radius: 20px; border: 2.5px solid var(--dark-ink);
     box-shadow: 3px 4px 0 var(--dark-ink);
     cursor: pointer;
+    transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease;
+  }
+  .tap-tip-badge:active {
+    transform: scale(0.88) translateY(2px);
+    box-shadow: 1px 2px 0 var(--dark-ink);
   }
 
-  /* 发射的爱心光波弹道 */
+  /* 飞行爱心光波 */
   .flying-heart-beam {
     position: absolute; pointer-events: none; z-index: 10;
     font-size: 2rem; font-weight: 900;
-    animation: flyToMeter 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    animation: flyToMeter 0.28s cubic-bezier(0.2, 0.6, 0.35, 1) forwards;
   }
   @keyframes flyToMeter {
     0% { opacity: 1; transform: scale(0.6) translate(0, 0); }
-    50% { opacity: 1; transform: scale(1.4) translate(-90px, -15px); }
-    100% { opacity: 0; transform: scale(1.8) translate(-190px, 0); }
+    50% { opacity: 1; transform: scale(1.3) translate(-90px, -15px); }
+    100% { opacity: 0.2; transform: scale(1.5) translate(-185px, 0); }
+  }
+
+  /* 爆裂粒子 */
+  .heart-spark {
+    position: absolute; pointer-events: none; z-index: 15;
+    font-size: var(--sz, 1rem);
+    animation: sparkScatter 0.4s ease-out forwards;
+  }
+  @keyframes sparkScatter {
+    0% {
+      opacity: 1; transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+    100% {
+      opacity: 0; transform: translate(var(--tx, -30px), var(--ty, -30px)) scale(0.3) rotate(var(--rot, 45deg));
+    }
   }
 
   /* 表白信 */
@@ -632,6 +677,7 @@
   </div>
   <div class="drawer-foot">
     <button class="btn-action" id="refreshAnswersBtn" style="background:var(--shin-yellow);color:#181926;">🔄 刷新最新回复数据</button>
+    <button class="btn-action" id="clearAnswersBtn" style="background:#FFF;color:#FF4769;font-size:0.9rem;padding:9px;border-color:#FF4769;">🗑️ 清空所有历史答卷记录</button>
   </div>
 </div>
 
@@ -773,7 +819,7 @@
   <div class="reel" id="reel"></div>
 </section>
 
-<!-- ============ 7. 蓄力挑战（纯净小新 + 独立爱心发射） ============ -->
+<!-- ============ 7. 蓄力挑战 ============ -->
 <section id="game">
   <div class="section-head">
     <div class="eyebrow serif">Power Up Challenge</div>
@@ -783,50 +829,42 @@
 
   <div class="power-battle-stage" id="battleStage">
     <!-- 左边：粉色竖向能量柱 -->
-    <div class="vertical-meter-wrap">
-      <div class="vertical-meter-track">
+    <div class="vertical-meter-wrap" id="meterWrap">
+      <div class="vertical-meter-track" id="meterTrack">
         <div class="vertical-meter-fill" id="meterFill">
-          <div class="meter-indicator-heart">💖</div>
+          <div class="meter-indicator-heart" id="indicatorHeart">💖</div>
         </div>
       </div>
       <div class="meter-pct-badge" id="meterLabel">0%</div>
     </div>
 
-    <!-- 右边：彻底去除粉色长方块背景的纯净小新主体 -->
+    <!-- 右边：彻底去除粉色背景的纯净小新主体 -->
     <div class="shin-cannon-wrap" id="tapArea">
       <div class="shin-figure-box">
         <div class="shin-body-canvas" id="shinBody">
-          <!-- 纯净矢量蜡笔小新主体（透明底色） -->
           <svg viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g stroke="#181926" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
-              <!-- 睡衣睡帽 -->
               <path d="M70,30 Q120,5 150,45 Q160,70 140,90 Q90,95 70,80 Z" fill="#FFFDF9" />
               <circle cx="155" cy="40" r="10" fill="#FFD026" />
               <polygon points="100,28 112,48 88,48" fill="#FF4769" />
-              <!-- 脸部与标志性粗眉 -->
               <path d="M70,80 Q50,90 40,115 Q35,140 60,150 Q100,165 135,140 Q150,110 135,85" fill="#FFE0BD" />
               <path d="M50,92 Q68,80 88,95" stroke="#181926" stroke-width="7" fill="none" />
               <path d="M98,90 Q118,78 135,92" stroke="#181926" stroke-width="7" fill="none" />
-              <!-- 眼睛与嘟嘟嘴 -->
               <ellipse cx="68" cy="108" rx="6" ry="8" fill="#181926" />
               <ellipse cx="112" cy="105" rx="6" ry="8" fill="#181926" />
               <path d="M42,125 Q28,128 35,138 Q46,145 58,135 Z" fill="#FF8EA3" />
-              <!-- 身体与睡衣 -->
               <path d="M60,150 Q45,180 55,205 L130,205 Q145,175 130,145 Z" fill="#FFFDF9" />
               <rect x="75" y="165" width="16" height="16" rx="3" fill="#FFD026" transform="rotate(15 83 173)" />
               <circle cx="110" cy="180" r="8" fill="#2FC980" />
-              <!-- 发射手势 -->
               <path d="M55,155 Q20,150 15,130 Q25,120 42,140" fill="#FFE0BD" />
-              <!-- 小短腿 -->
               <path d="M70,205 Q65,230 75,235" fill="none" />
               <path d="M110,205 Q115,230 105,235" fill="none" />
             </g>
           </svg>
         </div>
-        <!-- 独立手势爱心（可脱离发射） -->
         <div class="shin-hand-heart" id="handHeart">❤️</div>
       </div>
-      <div class="tap-tip-badge">戳我发射心动光波 💥</div>
+      <div class="tap-tip-badge" id="tapBadge">戳我发射心动光波 💥</div>
     </div>
   </div>
 </section>
@@ -858,7 +896,6 @@
 <footer>Made with ❤️ & Crayon Shin-chan Style · 调皮且真诚</footer>
 
 <script>
-/* 内置 4 张免外链高颜值蜡笔小新主题插画 */
 const DEFAULT_UI_IMAGES = [
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='270' viewBox='0 0 280 270'><rect width='280' height='270' fill='%23FFEBEF'/><circle cx='140' cy='120' r='60' fill='%23FFD026'/><text x='140' y='125' font-size='46' text-anchor='middle'>🥰</text><text x='140' y='210' font-size='18' font-weight='bold' fill='%23FF4769' text-anchor='middle'>初次相遇的心动 ✨</text></svg>",
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='270' viewBox='0 0 280 270'><rect width='280' height='270' fill='%23EAF3FF'/><circle cx='140' cy='120' r='60' fill='%233E8BFF' opacity='0.2'/><text x='140' y='125' font-size='46' text-anchor='middle'>😴</text><text x='140' y='210' font-size='18' font-weight='bold' fill='%233E8BFF' text-anchor='middle'>互道晚安的日常 🌙</text></svg>",
@@ -915,6 +952,9 @@ const StateService = {
   },
   getAnswers() {
     return JSON.parse(localStorage.getItem('ANSWERS_' + CURRENT_ROOM_ID) || '{}');
+  },
+  clearAnswers() {
+    localStorage.removeItem('ANSWERS_' + CURRENT_ROOM_ID);
   }
 };
 
@@ -1094,7 +1134,6 @@ function initDrawerForm() {
   setVal('cfg_developText', c.developText); setVal('cfg_devYes', c.devYesReply); setVal('cfg_devNo', c.devNoReply);
   setVal('cfg_letterBody', c.letterBody); setVal('cfg_yesReply', c.yesReply); setVal('cfg_finalNoReply', c.finalNoReply);
 
-  // 理由输入框
   const container = document.getElementById('reasonsInputsContainer');
   container.innerHTML = '';
   c.reasons.forEach((r, idx) => {
@@ -1104,7 +1143,6 @@ function initDrawerForm() {
     container.appendChild(box);
   });
 
-  // 放映厅照片直接选图
   const memContainer = document.getElementById('memoriesInputsContainer');
   memContainer.innerHTML = '';
   c.memories.forEach((m, idx) => {
@@ -1188,15 +1226,24 @@ document.getElementById('openAnswersBtn').addEventListener('click', () => { rend
 document.getElementById('closeAnswersBtn').addEventListener('click', () => answersDrawer.classList.remove('open'));
 document.getElementById('refreshAnswersBtn').addEventListener('click', () => renderAnswers());
 
-/* 一键恢复初始模板（彻底重置：滑杆、文字、蓄力能量柱与放映厅照片） */
+/* 答卷面板：清空所有答卷记录 */
+document.getElementById('clearAnswersBtn').addEventListener('click', () => {
+  if (confirm("确定要清空所有历史答卷与心动值记录吗？")) {
+    StateService.clearAnswers();
+    renderAnswers();
+    alert("🗑️ 答卷记录已成功清空！");
+  }
+});
+
+/* 一键恢复初始模板 */
 document.getElementById('resetDefaultBtn').addEventListener('click', () => {
-  if (confirm("确定要恢复默认初始模板吗？包括心动值、能量进度条和导入的照片都会恢复成最初状态。")) {
+  if (confirm("确定要恢复默认初始模板吗？包括心动值、能量进度条、相册照片与答卷记录都会彻底重置。")) {
     localStorage.removeItem('MY_CONFESS_CONFIG_FINAL');
+    StateService.clearAnswers();
     CURRENT_CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
     document.getElementById('authorScoreSlider').value = 100;
     updateAuthorScore(100);
 
-    // 彻底重置蓄力进度条与信件锁
     progress = 0;
     document.getElementById('meterFill').style.height = '0%';
     document.getElementById('meterLabel').textContent = '0%';
@@ -1208,7 +1255,8 @@ document.getElementById('resetDefaultBtn').addEventListener('click', () => {
 
     initDrawerForm();
     renderPage();
-    alert("🔄 已成功恢复为纯净初始模板（所有内容、照片、心动值与蓄力柱均已归位）！");
+    renderAnswers();
+    alert("🔄 已成功恢复为纯净初始模板（所有定制内容、照片与历史答卷记录均已归零）！");
   }
 });
 
@@ -1325,50 +1373,104 @@ viewerScoreSlider.addEventListener('input', (e) => {
 checkAccessMode(); renderPage();
 
 /* =========================================================
-   蓄力游戏：手指爱心发射实体光波弹道
+   蓄力游戏：4 项手感机制核心联动引擎
    ========================================================= */
 const battleStage = document.getElementById('battleStage');
 const tapArea = document.getElementById('tapArea');
+const meterWrap = document.getElementById('meterWrap');
+const meterTrack = document.getElementById('meterTrack');
 const meterFill = document.getElementById('meterFill');
+const indicatorHeart = document.getElementById('indicatorHeart');
 const meterLabel = document.getElementById('meterLabel');
 const shinBody = document.getElementById('shinBody');
 const handHeart = document.getElementById('handHeart');
+
+function triggerImpactBurst() {
+  // 1. 能量柱整体受击震颤 (Haptic Shake)
+  meterTrack.classList.remove('hit-punch');
+  void meterTrack.offsetWidth;
+  meterTrack.classList.add('hit-punch');
+
+  // 2. 能量柱顶端液面闪光爆裂 (Flash & Pop)
+  indicatorHeart.classList.remove('hit-flash');
+  void indicatorHeart.offsetWidth;
+  indicatorHeart.classList.add('hit-flash');
+
+  // 3. 碰撞散落小爱心粒子
+  const count = 7;
+  const chars = ['💖', '💕', '✨', '💓', '🌟', '💘'];
+  for (let i = 0; i < count; i++) {
+    const spark = document.createElement('div');
+    spark.className = 'heart-spark';
+    spark.textContent = chars[Math.floor(Math.random() * chars.length)];
+    
+    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5);
+    const dist = 32 + Math.random() * 45;
+    const tx = Math.cos(angle) * dist + 'px';
+    const ty = Math.sin(angle) * dist + 'px';
+    const rot = (Math.random() * 180 - 90) + 'deg';
+    const sz = (0.85 + Math.random() * 0.65) + 'rem';
+
+    spark.style.setProperty('--tx', tx);
+    spark.style.setProperty('--ty', ty);
+    spark.style.setProperty('--rot', rot);
+    spark.style.setProperty('--sz', sz);
+
+    spark.style.left = '42px';
+    spark.style.top = '140px';
+
+    meterWrap.appendChild(spark);
+    setTimeout(() => spark.remove(), 420);
+  }
+}
 
 function launchHeartLaser(e) {
   if (e) e.preventDefault();
   if (progress >= TARGET) return;
   progress++;
 
-  // 爱心实体脱离手指飞行动画
+  // 爱心实体弹道发射
   const beam = document.createElement('div');
   beam.className = 'flying-heart-beam';
-  beam.textContent = ['💖', '💕', '✨', '💘', '💓'][Math.floor(Math.random() * 5)];
+  beam.textContent = ['💖', '💕', '💘', '💓'][Math.floor(Math.random() * 4)];
   beam.style.right = '140px';
-  beam.style.top = (110 + (Math.random() - 0.5) * 35) + 'px';
+  beam.style.top = (110 + (Math.random() - 0.5) * 25) + 'px';
   battleStage.appendChild(beam);
-  setTimeout(() => beam.remove(), 320);
 
-  // 小新动作微震
-  shinBody.style.transform = 'scale(0.94) translateX(5px)';
-  handHeart.style.transform = 'scale(1.4) translateX(-8px)';
+  // 按钮与小新后坐力回弹 (Scale & Bounce)
+  shinBody.style.transform = 'scale(0.92) translateX(7px)';
+  handHeart.style.transform = 'scale(1.5) translateX(-12px)';
   setTimeout(() => {
     shinBody.style.transform = 'scale(1) translateX(0)';
     handHeart.style.transform = 'scale(1) translateX(0)';
-  }, 90);
+  }, 110);
 
-  const pct = Math.round((progress / TARGET) * 100);
-  meterFill.style.height = pct + '%';
-  meterLabel.textContent = pct + '%';
+  // 飞行 260ms 后精准命中
+  setTimeout(() => {
+    beam.remove();
+    triggerImpactBurst();
+    
+    // 非线性弹簧上涨
+    const pct = Math.round((progress / TARGET) * 100);
+    meterFill.style.height = pct + '%';
+    
+    // 数值跳动 Pop
+    meterLabel.textContent = pct + '%';
+    meterLabel.classList.remove('pop');
+    void meterLabel.offsetWidth;
+    meterLabel.classList.add('pop');
+    setTimeout(() => meterLabel.classList.remove('pop'), 160);
 
-  if (progress >= TARGET) {
-    document.getElementById('letter').classList.add('unlocked');
-    if (window.confetti) {
-      confetti({ particleCount: 120, spread: 100, origin: { y: 0.6 } });
-      setTimeout(() => confetti({ particleCount: 160, spread: 120, origin: { y: 0.5 } }), 300);
+    if (progress >= TARGET) {
+      document.getElementById('letter').classList.add('unlocked');
+      if (window.confetti) {
+        confetti({ particleCount: 130, spread: 100, origin: { y: 0.6 } });
+        setTimeout(() => confetti({ particleCount: 160, spread: 120, origin: { y: 0.5 } }), 300);
+      }
+      if (isViewerMode) StateService.submitAnswer("元气挑战", "TA 已充满 100% 元气，解开了秘密信件！");
+      setTimeout(() => document.getElementById('letter').scrollIntoView({ behavior: 'smooth' }), 600);
     }
-    if (isViewerMode) StateService.submitAnswer("元气挑战", "TA 已充满 100% 元气，解开了秘密信件！");
-    setTimeout(() => document.getElementById('letter').scrollIntoView({ behavior: 'smooth' }), 600);
-  }
+  }, 260);
 }
 
 tapArea.addEventListener('click', launchHeartLaser);
