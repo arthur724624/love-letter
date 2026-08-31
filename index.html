@@ -67,38 +67,28 @@
     background-size: 26px 26px;
   }
 
-  /* =========================================================
-     超醒目 · 顶部功能栏与定制按钮
-     ========================================================= */
+  /* 顶部工具栏 */
   #topBar {
     position: fixed; left: 24px; top: 22px;
     z-index: 1000;
     display: flex; align-items: center; gap: 12px;
   }
   
-  /* 极度醒目的定制按钮设计 */
   .control-btn.btn-edit {
     position: relative;
     height: 48px; padding: 0 22px;
-    border-radius: 24px;
-    border: 3px solid #181926;
+    border-radius: 24px; border: 3px solid #181926;
     background: linear-gradient(135deg, #FFE853, var(--shin-yellow));
-    color: #181926;
-    display: inline-flex; align-items: center; gap: 8px;
-    font-size: 1.05rem; font-weight: 900;
-    cursor: pointer;
+    color: #181926; display: inline-flex; align-items: center; gap: 8px;
+    font-size: 1.05rem; font-weight: 900; cursor: pointer;
     box-shadow: 4px 6px 0 #181926, 0 8px 24px rgba(255, 208, 38, 0.45);
     animation: btnPulse 2.8s infinite ease-in-out;
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
   @keyframes btnPulse {
     0%, 100% { transform: scale(1); box-shadow: 4px 6px 0 #181926, 0 8px 24px rgba(255, 208, 38, 0.45); }
     50% { transform: scale(1.05); box-shadow: 4px 8px 0 #181926, 0 12px 30px rgba(255, 71, 105, 0.35); }
   }
-  .control-btn.btn-edit:hover { transform: translate(-2px, -3px) scale(1.06); box-shadow: 6px 9px 0 #181926; animation: none; }
-  .control-btn.btn-edit:active { transform: translate(2px, 3px); box-shadow: 1px 2px 0 #181926; }
-  
-  /* 闪烁提示徽章 */
+
   .edit-badge {
     position: absolute; top: -7px; right: -7px;
     background: var(--shin-red); color: #FFF;
@@ -106,25 +96,17 @@
     padding: 2px 7px; border-radius: 10px;
     border: 2px solid #181926;
     box-shadow: 2px 2px 0 #181926;
-    animation: bounceBadge 1.2s infinite;
-  }
-  @keyframes bounceBadge {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
   }
 
   .control-btn.btn-theme {
     width: 48px; height: 48px; border-radius: 50%;
-    border: 2.5px solid var(--dark-ink);
-    background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(10px);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.25rem; cursor: pointer;
-    box-shadow: 3px 4px 0 var(--dark-ink);
+    border: 2.5px solid var(--dark-ink); background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; cursor: pointer; box-shadow: 3px 4px 0 var(--dark-ink);
   }
   body.night .control-btn.btn-theme { background: rgba(35,37,58,0.9); }
 
-  /* 自定义抽屉式面板 */
+  /* 定制抽屉面板 */
   #customDrawer {
     position: fixed; top: 0; right: -490px; width: 100%; max-width: 460px; height: 100vh;
     background: #FFFDF9; border-left: 3px solid var(--dark-ink);
@@ -148,9 +130,8 @@
   .form-input, .form-textarea {
     width: 100%; padding: 10px 14px;
     border: 2px solid #E2DED5; border-radius: 12px;
-    font-family: inherit; font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+    font-family: inherit; font-size: 0.95rem; outline: none;
   }
-  .form-input:focus, .form-textarea:focus { border-color: var(--shin-red); }
   .form-textarea { resize: vertical; min-height: 50px; }
   
   .drawer-foot {
@@ -160,12 +141,10 @@
   .btn-save {
     width: 100%; padding: 12px; border-radius: 14px; border: 2px solid var(--dark-ink);
     background: var(--shin-green); color: #FFF; font-weight: 800; font-size: 1rem; cursor: pointer;
-    box-shadow: 2px 3px 0 var(--dark-ink);
   }
   .btn-share {
     width: 100%; padding: 12px; border-radius: 14px; border: 2px solid var(--dark-ink);
     background: var(--shin-blue); color: #FFF; font-weight: 800; font-size: 1rem; cursor: pointer;
-    box-shadow: 2px 3px 0 var(--dark-ink);
   }
 
   /* 侧边导航 */
@@ -269,13 +248,12 @@
   .c-yes-btn {
     padding: 12px 24px; border-radius: 30px; border: 2px solid var(--dark-ink);
     background: var(--shin-green); color: #FFF; font-weight: 800; cursor: pointer;
-    box-shadow: 2px 3px 0 var(--dark-ink); transition: transform 0.15s; z-index: 10;
+    box-shadow: 2px 3px 0 var(--dark-ink);
   }
-  .c-yes-btn:hover { transform: scale(1.05); }
   .c-dodge-btn {
     padding: 12px 20px; border-radius: 30px; border: 2px solid #CBD5E1;
     background: #FFF; color: #64748B; font-weight: 700; cursor: pointer;
-    transition: transform 0.2s ease-out; z-index: 10;
+    transition: transform 0.2s ease-out;
   }
   .reply-msg {
     font-weight: 800; padding: 12px 20px; border-radius: 18px; width: 100%;
@@ -299,7 +277,7 @@
     position: absolute; inset: 0; backface-visibility: hidden;
     border-radius: 26px; border: 2px solid var(--border-glass);
     background: var(--card-glass); backdrop-filter: blur(14px);
-    box-shadow: 0 16px 36px rgba(0,0,0,0.06); padding: 30px 26px;
+    box-shadow: 0 16px 36px rgba(0,0,0,0.05); padding: 30px 26px;
     display: flex; flex-direction: column;
   }
   .reason-card .face.back {
@@ -403,15 +381,9 @@
 
   /* 最终心动总结回执卡 */
   #summaryCard {
-    display: none;
-    margin: 40px auto 0;
-    max-width: 580px;
-    background: #FFFDF9;
-    border: 3px solid var(--dark-ink);
-    border-radius: 24px;
-    padding: 32px 28px;
-    box-shadow: 6px 8px 0 var(--dark-ink);
-    text-align: left;
+    display: none; margin: 40px auto 0; max-width: 580px;
+    background: #FFFDF9; border: 3px solid var(--dark-ink); border-radius: 24px;
+    padding: 32px 28px; box-shadow: 6px 8px 0 var(--dark-ink); text-align: left;
   }
   #summaryCard.show { display: block; animation: popUpCard 0.6s ease; }
   .summary-item {
@@ -428,12 +400,10 @@
 <div id="scrollProgress"></div>
 <div id="pixelGrid"></div>
 
-<!-- =========================================================
-     超醒目顶部工具栏
-     ========================================================= -->
+<!-- 顶部工具栏（仅在编辑模式显示，对方打开时完全隐藏） -->
 <div id="topBar">
   <button class="control-btn btn-edit" id="openDrawerBtn">
-    <span>✏️ 填写/定制表白内容</span>
+    <span>✏️ 专属表白工坊</span>
     <span class="edit-badge">点我定制</span>
   </button>
   <button class="control-btn btn-theme" id="themeToggle">☀️</button>
@@ -442,7 +412,7 @@
 <!-- ============ 表白内容定制抽屉 ============ -->
 <div id="customDrawer">
   <div class="drawer-head">
-    <h3>💌 定制全部心意与内容</h3>
+    <h3>💌 表白内容定制台</h3>
     <button class="close-btn" id="closeDrawerBtn">×</button>
   </div>
   <div class="drawer-body">
@@ -503,8 +473,8 @@
     </div>
   </div>
   <div class="drawer-foot">
-    <button class="btn-save" id="saveAndApplyBtn">✨ 保存并即时预览</button>
-    <button class="btn-share" id="generateShareLinkBtn">🔗 生成专属表白链接 (发给TA)</button>
+    <button class="btn-save" id="saveAndApplyBtn">✨ 保存并在本地预览</button>
+    <button class="btn-share" id="generateShareLinkBtn">🔗 生成 TA 的专属心动链接 (无编辑入口)</button>
   </div>
 </div>
 
@@ -654,7 +624,6 @@
   </div>
   <div id="finalMsg"></div>
 
-  <!-- 心动回执卡 -->
   <div id="summaryCard">
     <div style="font-family:'Baloo 2';font-weight:900;font-size:1.3rem;color:var(--shin-red);">📋 本次心动挑战结果回执</div>
     <div style="font-size:0.85rem;color:#64748B;margin-top:2px;">记录于当下的心动选择：</div>
@@ -700,20 +669,24 @@ const DEFAULT_CONFIG = {
 
 let CURRENT_CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 
-function loadInitialData() {
+/* 区分发起者与被表白者 */
+function checkAccessMode() {
   const urlParams = new URLSearchParams(window.location.search);
-  const shareData = urlParams.get('data');
-  if (shareData) {
+  const viewData = urlParams.get('view');
+  
+  if (viewData) {
+    // 【被表白者查看模式】：完全移除左上角编辑入口
+    document.getElementById('openDrawerBtn').style.display = 'none';
     try {
-      const decoded = JSON.parse(decodeURIComponent(escape(atob(shareData))));
+      const decoded = JSON.parse(decodeURIComponent(escape(atob(viewData))));
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
-      document.getElementById('openDrawerBtn').style.display = 'none';
-      return;
     } catch(e) {}
-  }
-  const localSaved = localStorage.getItem('MY_CONFESS_CONFIG_LOCAL_V5');
-  if (localSaved) {
-    try { CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, JSON.parse(localSaved)); } catch(e){}
+  } else {
+    // 【发起者模式】：载入本地草稿
+    const localSaved = localStorage.getItem('MY_CONFESS_FINAL_STORE');
+    if (localSaved) {
+      try { CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, JSON.parse(localSaved)); } catch(e){}
+    }
   }
 }
 
@@ -799,16 +772,18 @@ document.getElementById('closeDrawerBtn').addEventListener('click', () => custom
 
 document.getElementById('saveAndApplyBtn').addEventListener('click', () => {
   collectDrawerForm();
-  localStorage.setItem('MY_CONFESS_CONFIG_LOCAL_V5', JSON.stringify(CURRENT_CONFIG));
+  localStorage.setItem('MY_CONFESS_FINAL_STORE', JSON.stringify(CURRENT_CONFIG));
   renderPage(); customDrawer.classList.remove('open');
-  alert("✨ 修改已成功保存并应用！");
+  alert("✨ 修改已成功保存在本地并应用预览！");
 });
+
 document.getElementById('generateShareLinkBtn').addEventListener('click', () => {
   collectDrawerForm();
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(CURRENT_CONFIG))));
-  const shareUrl = window.location.origin + window.location.pathname + '?data=' + encoded;
-  navigator.clipboard.writeText(shareUrl).then(() => alert("🎉 专属表白链接已复制！\n发送给 TA，TA 打开后就能直接在网页上互动选择！"))
-  .catch(() => prompt("请手动复制下面的专属表白链接发给 TA：", shareUrl));
+  const targetUrl = window.location.origin + window.location.pathname + '?view=' + encoded;
+  navigator.clipboard.writeText(targetUrl).then(() => {
+    alert("🎉 TA 的专属心动链接已复制到剪贴板！\n发送给 TA，对方打开就是纯净的表白互动页面，完全不会出现任何编辑按钮！");
+  }).catch(() => prompt("请复制给 TA 的专属链接：", targetUrl));
 });
 
 /* 选项事件与回执生成 */
@@ -842,7 +817,7 @@ function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, summaryI
 setupPlayfulBtn('meetYesBtn', 'meetNoBtn', 'meetRow', 'meetYesReply', 'meetNoReply', 'sum_meet', '01. 深入认识');
 setupPlayfulBtn('devYesBtn', 'devNoBtn', 'devRow', 'devYesReply', 'devNoReply', 'sum_dev', '02. 进一步发展');
 
-/* 印象分滑动 */
+/* 印象分滑杆 */
 const scoreSlider = document.getElementById('scoreSlider');
 scoreSlider.addEventListener('input', (e) => {
   const v = parseInt(e.target.value);
@@ -856,7 +831,7 @@ scoreSlider.addEventListener('input', (e) => {
   }
 });
 
-loadInitialData(); renderPage();
+checkAccessMode(); renderPage();
 let progress = 0; const TARGET = 30;
 document.getElementById('tapBtn').addEventListener('click', () => {
   if (progress >= TARGET) return;
@@ -890,6 +865,35 @@ finalNoBtn.addEventListener('mouseenter', () => {
     finalNoBtn.style.transform = `translate(${(Math.random() - 0.5) * 160}px, ${(Math.random() - 0.5) * 80}px)`;
     finalDodge++;
   }
+});
+finalNoBtn.addEventListener('click', () => {
+  answerRow.style.display = 'none';
+  const msg = document.getElementById('finalMsg');
+  msg.textContent = CURRENT_CONFIG.finalNoReply;
+  msg.style.borderColor = '#CBD5E1'; msg.style.color = '#64748B';
+  msg.classList.add('show');
+  sumFinal.textContent = `03. 最终表白回复：选择【委婉暂缓 / 保持好友】`;
+  sumFinal.style.color = '#64748B';
+  summaryCard.classList.add('show');
+});
+
+document.getElementById('yesBtn').addEventListener('click', () => {
+  answerRow.style.display = 'none';
+  const msg = document.getElementById('finalMsg');
+  msg.textContent = CURRENT_CONFIG.yesReply;
+  msg.style.borderColor = 'var(--shin-green)'; msg.style.color = 'var(--dark-ink)';
+  msg.classList.add('show');
+  if (window.confetti) confetti({ particleCount: 220, spread: 100, origin: { y: 0.6 } });
+  sumFinal.textContent = `03. 最终表白回复：选择【答应表白，心动拉满】🎉`;
+  sumFinal.style.color = 'var(--shin-green)';
+  summaryCard.classList.add('show');
+});
+
+document.getElementById('carBuddy').addEventListener('click', () => document.getElementById('impressions').scrollIntoView({ behavior: 'smooth' }));
+document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('night'));
+</script>
+</body>
+</html>
 });
 finalNoBtn.addEventListener('click', () => {
   answerRow.style.display = 'none';
