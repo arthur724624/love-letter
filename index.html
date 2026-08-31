@@ -65,6 +65,7 @@
     background-size: 26px 26px;
   }
 
+  /* 顶部工具栏 */
   #topBar {
     position: fixed; left: 24px; top: 22px;
     z-index: 1000;
@@ -87,6 +88,7 @@
     justify-content: center; background: #FFF; font-size: 1.2rem;
   }
 
+  /* 抽屉面板 */
   .custom-drawer {
     position: fixed; top: 0; right: -500px; width: 100%; max-width: 480px; height: 100vh;
     background: #FFFDF9; border-left: 3px solid var(--dark-ink);
@@ -186,6 +188,7 @@
   .compare-card h3 { font-size: 1.35rem; margin-bottom: 12px; }
   .compare-card p { font-size: 1.05rem; color: #4A5568; line-height: 1.85; }
 
+  /* 心动值容器 */
   .score-dual-container {
     max-width: 720px; margin: 0 auto;
     display: flex; flex-direction: column; gap: 22px;
@@ -710,7 +713,6 @@ function checkAccessMode() {
   if (room) CURRENT_ROOM_ID = room;
 
   if (viewData) {
-    // 【被表白者查看模式】：完全从 URL 解密数据
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
     document.getElementById('authorScoreSectionWrap').style.display = 'none';
@@ -739,7 +741,7 @@ function renderPage() {
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
   
-  // 严格读取并锁定表白者给的心动值
+  // 严格根据 CURRENT_CONFIG 渲染心动值
   const scoreNum = CURRENT_CONFIG.authorScoreNum !== undefined ? CURRENT_CONFIG.authorScoreNum : 80;
   const scoreVal = CURRENT_CONFIG.authorScoreVal || (scoreNum + "%");
   const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "心动值持续攀升中，根本停不下来～";
@@ -749,6 +751,7 @@ function renderPage() {
     document.getElementById('authorLiveScoreDesc').textContent = scoreDesc;
     document.getElementById('authorScoreSlider').value = scoreNum;
   } else {
+    // 被表白者端：强制锁定并展示从 URL 解析出的值
     document.getElementById('authorScoreVal').textContent = scoreVal;
     document.getElementById('authorScoreDesc').textContent = scoreDesc;
   }
@@ -814,7 +817,7 @@ function renderPage() {
   }
 }
 
-/* 表白者滑动滑杆时，实时绑定心动值 */
+/* 滑杆逻辑：滑动时即刻更新并持久化 */
 const authorScoreSlider = document.getElementById('authorScoreSlider');
 function updateAuthorScore(v) {
   let valText = v + "%";
@@ -879,7 +882,7 @@ function collectDrawerForm() {
   CURRENT_CONFIG.yesReply = getVal('cfg_yesReply', "");
   CURRENT_CONFIG.finalNoReply = getVal('cfg_finalNoReply', "千万别有压力！继续做开心果！");
 
-  // 确保注入当前滑杆绑定的值
+  // 严格抓取当前滑杆实际数值
   const currentSliderVal = parseInt(document.getElementById('authorScoreSlider').value);
   updateAuthorScore(currentSliderVal);
 
@@ -920,7 +923,7 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
   collectDrawerForm();
   localStorage.setItem('MY_CONFESS_CONFIG_FINAL', JSON.stringify(CURRENT_CONFIG));
   
-  // 严格将当前滑动的准确心动值编码进 URL
+  // 保证准确编码
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(CURRENT_CONFIG))));
   const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
   
