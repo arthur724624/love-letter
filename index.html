@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>一封写给你的心动挑战信 ✨</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Caveat:wght@700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,800;1,9..144,600&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -12,6 +12,8 @@
     --shin-green: #2FC980;
     --shin-yellow: #FFD026;
     --shin-red: #FF4769;
+    --shin-pink: #FF6584;
+    --shin-pink-glow: #FF8EA3;
     --shin-blue: #3E8BFF;
     --shin-purple: #7C5CFC;
     --dark-ink: #181926;
@@ -361,17 +363,107 @@
   .polaroid .cap { font-weight: 800; font-size: 1.08rem; margin-top: 15px; }
   .polaroid .date { font-size: 0.82rem; font-weight: 700; color: #8C96A8; margin-top: 4px; }
 
-  /* 蓄力挑战 */
-  #game { text-align: center; }
-  .meter-container {
-    max-width: 480px; margin: 36px auto 16px; background: #FFF;
-    border: 3px solid var(--dark-ink); border-radius: 40px; padding: 6px;
-    box-shadow: 6px 8px 0 var(--dark-ink);
+  /* =========================================================
+     全新的左右对战式心动蓄力板块（防止手机连点放大 + 爱心发射弹道）
+     ========================================================= */
+  #game {
+    text-align: center;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
   }
-  #meterBar { height: 30px; width: 0%; border-radius: 30px; background: linear-gradient(90deg, var(--shin-yellow), var(--shin-green), var(--shin-red)); transition: width 0.2s; }
-  #meterLabel { font-size: 1.5rem; font-weight: 900; margin-top: 18px; }
-  .tap-character-btn { margin: 36px auto 12px; background: transparent; border: none; cursor: pointer; outline: none; }
-  .tap-character-btn img { width: 220px; height: auto; filter: drop-shadow(0 18px 25px rgba(255, 71, 105, 0.35)); }
+  .power-battle-stage {
+    max-width: 680px; margin: 30px auto 0;
+    display: flex; align-items: center; justify-content: center;
+    gap: 40px; position: relative; min-height: 380px;
+    padding: 20px;
+  }
+  @media(max-width: 600px) {
+    .power-battle-stage { gap: 24px; }
+  }
+
+  /* 左侧：粉色竖向能量柱 */
+  .vertical-meter-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .vertical-meter-track {
+    width: 44px; height: 320px; background: #FFF;
+    border: 3.5px solid var(--dark-ink); border-radius: 25px;
+    position: relative; box-shadow: 5px 6px 0 var(--dark-ink);
+    display: flex; flex-direction: column-reverse; padding: 4px;
+  }
+  .vertical-meter-fill {
+    width: 100%; height: 0%; border-radius: 20px;
+    background: linear-gradient(180deg, #FF758C 0%, #FF7EB3 50%, #FF4769 100%);
+    box-shadow: inset 0 0 12px rgba(255,255,255,0.6);
+    transition: height 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+  /* 顶部动态跳动心形指示标 */
+  .meter-indicator-heart {
+    position: absolute; top: -18px; left: 50%;
+    transform: translateX(-50%); font-size: 1.6rem;
+    filter: drop-shadow(0 4px 6px rgba(255, 71, 105, 0.45));
+    animation: heartPulse 0.6s infinite alternate;
+    pointer-events: none;
+  }
+  @keyframes heartPulse {
+    from { transform: translateX(-50%) scale(1); }
+    to { transform: translateX(-50%) scale(1.35); }
+  }
+
+  .meter-pct-badge {
+    font-size: 1.25rem; font-weight: 900; color: var(--shin-red);
+    background: #FFF; padding: 6px 14px; border-radius: 16px;
+    border: 2.5px solid var(--dark-ink); box-shadow: 3px 3px 0 var(--dark-ink);
+  }
+
+  /* 右侧：发射爱心的小新按钮 */
+  .shin-cannon-wrap {
+    position: relative; display: flex; flex-direction: column; align-items: center;
+  }
+  .tap-shin-btn {
+    background: transparent; border: none; cursor: pointer; outline: none;
+    touch-action: manipulation;
+    transition: transform 0.08s ease;
+  }
+  .tap-shin-btn:active {
+    transform: scale(0.92) translate(4px, 2px);
+  }
+  .shin-cannon-img {
+    width: 190px; height: auto;
+    filter: drop-shadow(0 14px 20px rgba(255, 71, 105, 0.3));
+    pointer-events: none;
+  }
+  .tap-tip-badge {
+    margin-top: 14px; background: var(--shin-yellow);
+    font-size: 0.95rem; font-weight: 900; padding: 8px 18px;
+    border-radius: 20px; border: 2.5px solid var(--dark-ink);
+    box-shadow: 3px 4px 0 var(--dark-ink);
+    animation: bounceTip 1s infinite alternate;
+  }
+  @keyframes bounceTip {
+    from { transform: translateY(0); }
+    to { transform: translateY(-6px); }
+  }
+
+  /* 飞行动画爱心光波弹道 */
+  .flying-heart-beam {
+    position: absolute; pointer-events: none; z-index: 10;
+    font-size: 1.8rem; font-weight: 900;
+    animation: flyToMeter 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  }
+  @keyframes flyToMeter {
+    0% {
+      opacity: 1; transform: scale(0.6) translate(0, 0);
+    }
+    50% {
+      opacity: 1; transform: scale(1.3) translate(-80px, -15px);
+    }
+    100% {
+      opacity: 0; transform: scale(1.6) translate(-170px, 0);
+    }
+  }
 
   /* 表白信 */
   #letter {
@@ -498,7 +590,7 @@
     <div id="reasonsInputsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
-    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅相册（直接选图）</div>
+    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅相册（支持手机/电脑直选）</div>
     <div id="memoriesInputsContainer" style="display:flex;flex-direction:column;gap:12px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
@@ -583,7 +675,6 @@
 
 <!-- ============ 3. 双向心动值板块 ============ -->
 <section id="scoreSec">
-  <!-- 表白者端看到的单卡片模式 -->
   <div id="authorScoreSectionWrap">
     <div class="section-head">
       <div class="eyebrow serif">Rating For You</div>
@@ -598,7 +689,6 @@
     </div>
   </div>
 
-  <!-- 被表白者端看到的双卡片对比模式 -->
   <div id="viewerScoreSectionWrap" style="display:none;">
     <div class="section-head">
       <div class="eyebrow serif">Heartbeat Match</div>
@@ -677,18 +767,33 @@
   <div class="reel" id="reel"></div>
 </section>
 
-<!-- ============ 7. 蓄力 ============ -->
+<!-- ============ 7. 蓄力挑战（左右对战式动感发射） ============ -->
 <section id="game">
   <div class="section-head">
     <div class="eyebrow serif">Power Up Challenge</div>
-    <h2>元气值蓄力挑战</h2>
-    <p>疯狂戳戳发射爱心的小新，充满 100% 才能解开最后的大秘密！</p>
+    <h2>爱心光波蓄力挑战</h2>
+    <p>疯狂戳戳右边的小新发射心动光波，把左边的粉红爱心能量柱打满 100% 吧！💖</p>
   </div>
-  <div class="meter-container"><div id="meterBar"></div></div>
-  <div id="meterLabel">元气蓄力 0%</div>
-  <button class="tap-character-btn" id="tapBtn">
-    <img src="https://i.postimg.cc/Jsd7RFrx/preview-(4).webp" alt="发射爱心戳戳我">
-  </button>
+
+  <div class="power-battle-stage" id="battleStage">
+    <!-- 左边：粉色竖向爱心能量柱 -->
+    <div class="vertical-meter-wrap">
+      <div class="vertical-meter-track">
+        <div class="vertical-meter-fill" id="meterFill">
+          <div class="meter-indicator-heart">💖</div>
+        </div>
+      </div>
+      <div class="meter-pct-badge" id="meterLabel">0%</div>
+    </div>
+
+    <!-- 右边：透明抠图爱心小新 -->
+    <div class="shin-cannon-wrap">
+      <button class="tap-shin-btn" id="tapBtn">
+        <img src="https://i.postimg.cc/Jsd7RFrx/preview-(4).webp" alt="发射爱心戳戳我" class="shin-cannon-img" id="shinGun">
+      </button>
+      <div class="tap-tip-badge">戳我发射爱心 👉💥</div>
+    </div>
+  </div>
 </section>
 
 <!-- ============ 8. 表白信 ============ -->
@@ -777,7 +882,6 @@ const StateService = {
 
 let isViewerMode = false;
 function checkAccessMode() {
-  // 核心升级：同时兼容 hash 锚点 (#data=) 与 query 参数 (?view=)
   let rawData = null;
   const hash = window.location.hash;
   if (hash && hash.includes('data=')) {
@@ -788,7 +892,6 @@ function checkAccessMode() {
   }
 
   if (rawData) {
-    // 【被表白者查看模式】：完全从数据串解密
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
     document.getElementById('authorScoreSectionWrap').style.display = 'none';
@@ -798,7 +901,6 @@ function checkAccessMode() {
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
-    // 【表白者模式】：读取本地草稿
     isViewerMode = false;
     document.getElementById('authorScoreSectionWrap').style.display = 'block';
     document.getElementById('viewerScoreSectionWrap').style.display = 'none';
@@ -818,7 +920,7 @@ function renderPage() {
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
   
-  // 严格从 CURRENT_CONFIG 读取并渲染心动值
+  // 严格渲染心动值
   const scoreNum = CURRENT_CONFIG.authorScoreNum !== undefined ? Number(CURRENT_CONFIG.authorScoreNum) : 100;
   const scoreVal = CURRENT_CONFIG.authorScoreVal || (scoreNum === 100 ? "520% 🚀" : scoreNum + "%");
   const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
@@ -828,7 +930,6 @@ function renderPage() {
     document.getElementById('authorLiveScoreDesc').textContent = scoreDesc;
     document.getElementById('authorScoreSlider').value = scoreNum;
   } else {
-    // 被表白者端：强行写入从数据串解密出的具体数值与描述
     document.getElementById('authorScoreVal').textContent = scoreVal;
     document.getElementById('authorScoreDesc').textContent = scoreDesc;
   }
@@ -922,14 +1023,14 @@ function updateAuthorScore(v) {
 }
 authorScoreSlider.addEventListener('input', (e) => updateAuthorScore(e.target.value));
 
-/* 本地图片安全压缩引擎（每张约 15-20KB，零报错） */
+/* 本地图片安全超压缩引擎（每张约 15KB，纯本地不依赖网络） */
 function processLocalImage(file, callback) {
   const reader = new FileReader();
   reader.onload = (e) => {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const maxSide = 320;
+      const maxSide = 300;
       let w = img.width, h = img.height;
       if (w > h) {
         if (w > maxSide) { h = Math.round((h * maxSide) / w); w = maxSide; }
@@ -939,7 +1040,7 @@ function processLocalImage(file, callback) {
       canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, w, h);
-      callback(canvas.toDataURL('image/jpeg', 0.68));
+      callback(canvas.toDataURL('image/jpeg', 0.65));
     };
     img.src = e.target.result;
   };
@@ -1053,7 +1154,7 @@ document.getElementById('openAnswersBtn').addEventListener('click', () => { rend
 document.getElementById('closeAnswersBtn').addEventListener('click', () => answersDrawer.classList.remove('open'));
 document.getElementById('refreshAnswersBtn').addEventListener('click', () => renderAnswers());
 
-/* 一键恢复初始模板（全面彻底重置） */
+/* 一键恢复初始模板（全面彻底重置：滑杆、文字与放映厅照片全部归位） */
 document.getElementById('resetDefaultBtn').addEventListener('click', () => {
   if (confirm("确定要恢复默认初始模板吗？包括心动值和导入的照片都会恢复成最初状态。")) {
     localStorage.removeItem('MY_CONFESS_CONFIG_FINAL');
@@ -1077,12 +1178,12 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
   collectDrawerForm();
   localStorage.setItem('MY_CONFESS_CONFIG_FINAL', JSON.stringify(CURRENT_CONFIG));
   
-  // 核心升级：使用 Hash 锚点 (#data=) 生成链接，完全绕过 URI Too Long 限制！
+  // 采用 Hash 锚点方案（#data=），彻底摆脱 URI Too Long
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(CURRENT_CONFIG))));
-  const shareUrl = window.location.origin + window.location.pathname + '#data=' + encoded;
+  const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '#data=' + encoded;
   
   navigator.clipboard.writeText(shareUrl).then(() => {
-    alert("🎉 TA 的专属心动链接已生成并复制！\n已采用无损直连技术，对方打开绝不会再报 URI Too Long 错误！");
+    alert("🎉 TA 的专属心动链接已生成并复制！\n心动值【" + CURRENT_CONFIG.authorScoreVal + "】与照片已安全打包，绝不会再报 URI Too Long！");
   }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
 });
 
@@ -1179,18 +1280,46 @@ viewerScoreSlider.addEventListener('input', (e) => {
 
 checkAccessMode(); renderPage();
 
-let progress = 0; const TARGET = 30;
-document.getElementById('tapBtn').addEventListener('click', () => {
+/* =========================================================
+   蓄力游戏交互引擎：发射爱心弹道击打左侧粉红进度条
+   ========================================================= */
+let progress = 0; const TARGET = 25;
+const tapBtn = document.getElementById('tapBtn');
+const battleStage = document.getElementById('battleStage');
+const meterFill = document.getElementById('meterFill');
+const meterLabel = document.getElementById('meterLabel');
+const shinGun = document.getElementById('shinGun');
+
+tapBtn.addEventListener('click', (e) => {
+  e.preventDefault();
   if (progress >= TARGET) return;
   progress++;
+  
+  // 产生飞向左侧能量柱的爱心光波弹道
+  const beam = document.createElement('div');
+  beam.className = 'flying-heart-beam';
+  beam.textContent = ['💖', '💕', '✨', '💘', '💓'][Math.floor(Math.random() * 5)];
+  beam.style.right = '130px';
+  beam.style.top = (130 + (Math.random() - 0.5) * 40) + 'px';
+  battleStage.appendChild(beam);
+  setTimeout(() => beam.remove(), 380);
+
+  // 小新发射后坐力微震
+  shinGun.style.transform = 'scale(0.92) translateX(8px)';
+  setTimeout(() => shinGun.style.transform = 'scale(1) translateX(0)', 80);
+
   const pct = Math.round((progress / TARGET) * 100);
-  document.getElementById('meterBar').style.width = pct + '%';
-  document.getElementById('meterLabel').textContent = `元气蓄力 ${pct}%`;
+  meterFill.style.height = pct + '%';
+  meterLabel.textContent = pct + '%';
+
   if (progress >= TARGET) {
     document.getElementById('letter').classList.add('unlocked');
-    if (window.confetti) confetti({ particleCount: 160, spread: 90, origin: { y: 0.6 } });
+    if (window.confetti) {
+      confetti({ particleCount: 120, spread: 100, origin: { y: 0.6 } });
+      setTimeout(() => confetti({ particleCount: 160, spread: 120, origin: { y: 0.5 } }), 300);
+    }
     if (isViewerMode) StateService.submitAnswer("元气挑战", "TA 已充满 100% 元气，解开了秘密信件！");
-    setTimeout(() => document.getElementById('letter').scrollIntoView({ behavior: 'smooth' }), 500);
+    setTimeout(() => document.getElementById('letter').scrollIntoView({ behavior: 'smooth' }), 600);
   }
 });
 
