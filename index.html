@@ -15,7 +15,7 @@
     --shin-blue: #3E8BFF;
     --shin-purple: #7C5CFC;
     --dark-ink: #181926;
-    --card-glass: rgba(255, 255, 255, 0.92);
+    --card-glass: rgba(255, 255, 255, 0.94);
     --border-glass: rgba(255, 255, 255, 0.95);
     --ink-soft: #6C768A;
   }
@@ -30,7 +30,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
-  /* 核心背景：白天模式直接使用小新睡衣图案，夜间模式使用雪山星空大图 */
+  /* 核心背景：白天模式直接使用仓库内的 pajama.png，夜间模式使用 night.jpg */
   body {
     font-family: 'Noto Sans SC', sans-serif;
     color: var(--dark-ink);
@@ -38,16 +38,16 @@
     position: relative;
     min-height: 100vh;
     background-color: #FFFFFF;
-    background-image: url('https://i.postimg.cc/T3VzYm4D/pajama-full.jpg');
-    background-size: 320px;
+    background-image: url('pajama.png');
+    background-size: 300px;
     background-repeat: repeat;
     background-attachment: fixed;
-    transition: background 0.5s ease, color 0.5s ease;
+    transition: background 0.4s ease, color 0.4s ease;
   }
 
   body.night {
     background-color: #0B0E1A;
-    background-image: url('https://i.postimg.cc/85z1c0gT/shinchan-night-walk.jpg');
+    background-image: url('night.jpg');
     background-size: cover;
     background-position: center bottom;
     background-repeat: no-repeat;
@@ -90,8 +90,8 @@
   /* 抽屉面板（像素风背景） */
   .custom-drawer {
     position: fixed; top: 0; right: -500px; width: 100%; max-width: 480px; height: 100vh;
-    background: #FFFDF9 url('https://i.postimg.cc/q737zS2r/pixel-pattern.jpg') repeat;
-    background-size: 320px;
+    background: #FFFDF9 url('pixel.jpg') repeat;
+    background-size: 300px;
     border-left: 3px solid var(--dark-ink);
     box-shadow: -10px 0 35px rgba(0,0,0,0.22); z-index: 2000;
     display: flex; flex-direction: column; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -107,7 +107,7 @@
   
   .drawer-body {
     flex: 1; overflow-y: auto; padding: 24px;
-    background: rgba(255, 253, 249, 0.94); backdrop-filter: blur(6px);
+    background: rgba(255, 253, 249, 0.95); backdrop-filter: blur(6px);
     display: flex; flex-direction: column; gap: 16px;
   }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
@@ -134,7 +134,7 @@
   #progressNav {
     position: fixed; right: 24px; top: 50%;
     transform: translateY(-50%); display: flex; flex-direction: column; gap: 14px;
-    z-index: 100; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px);
+    z-index: 100; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
     padding: 14px 8px; border-radius: 30px; border: 1.5px solid #181926;
   }
   #progressNav .dot {
@@ -150,26 +150,25 @@
   .section-head h2 { font-size: clamp(2rem, 4.4vw, 2.7rem); margin-top: 8px; }
   .section-head p { margin-top: 12px; color: #6C768A; font-size: 1.05rem; }
 
-  /* HERO 区域：去掉了渐变色覆盖，保持背景图完整展示 */
+  /* HERO 区域 */
   #hero {
     min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center;
-    background: transparent;
+    text-align: center; background: transparent;
   }
   .tag-pill {
     padding: 8px 22px; border-radius: 999px; background: rgba(255, 255, 255, 0.95);
     border: 2px solid var(--dark-ink); box-shadow: 3px 4px 0 var(--dark-ink);
     font-size: 0.95rem; font-weight: 900; color: #181926; margin-bottom: 24px;
   }
-  #hero h1 { font-size: clamp(2.5rem, 6.5vw, 4.2rem); line-height: 1.25; font-weight: 900; text-shadow: 2px 2px 0 rgba(255,255,255,0.8); }
-  body.night #hero h1 { text-shadow: 2px 2px 0 rgba(0,0,0,0.8); }
+  #hero h1 { font-size: clamp(2.5rem, 6.5vw, 4.2rem); line-height: 1.25; font-weight: 900; }
   #hero h1 span.accent { color: var(--shin-red); position: relative; display: inline-block; }
   #hero p.sub {
     margin-top: 20px; max-width: 540px; font-size: 1.15rem; font-weight: 700;
     color: var(--dark-ink); line-height: 1.8;
-    background: rgba(255, 255, 255, 0.85); padding: 8px 16px; border-radius: 16px;
+    background: rgba(255, 255, 255, 0.9); padding: 8px 16px; border-radius: 16px;
+    border: 1.5px solid var(--dark-ink); box-shadow: 2px 3px 0 var(--dark-ink);
   }
-  body.night #hero p.sub { background: rgba(24, 28, 48, 0.85); color: #F2F1F6; }
+  body.night #hero p.sub { background: rgba(24, 28, 48, 0.9); color: #F2F1F6; border-color: rgba(255,255,255,0.2); }
 
   .car-stage { position: relative; margin-top: 36px; cursor: pointer; }
   .car-img { width: 210px; height: auto; filter: drop-shadow(0 14px 22px rgba(255, 71, 105, 0.25)); }
@@ -296,11 +295,11 @@
   .reason-card .tap { font-size: 0.85rem; font-weight: 800; color: var(--shin-red); margin-top: auto; }
   .reason-card .face.back .tap { color: rgba(255,255,255,0.85); }
 
-  /* 放映厅（融入小新雪山夜景图） */
+  /* 放映厅（融入仓库内 night.jpg） */
   #memories {
     position: relative;
     background: linear-gradient(180deg, rgba(15, 18, 31, 0.82) 0%, rgba(15, 18, 31, 0.92) 100%),
-                url('https://i.postimg.cc/85z1c0gT/shinchan-night-walk.jpg') center/cover no-repeat;
+                url('night.jpg') center/cover no-repeat;
     color: #FFF; border-radius: 46px; margin: 20px 16px; padding: 110px 24px;
     box-shadow: 0 20px 50px rgba(0,0,0,0.35); border: 3px solid var(--dark-ink);
   }
@@ -730,7 +729,7 @@ function checkAccessMode() {
   if (room) CURRENT_ROOM_ID = room;
 
   if (viewData) {
-    // 【被表白者查看模式】：完全从 URL 解密数据，优先级最高
+    // 【被表白者模式】：从 URL 解密数据，优先级最高
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
     document.getElementById('authorScoreSectionWrap').style.display = 'none';
@@ -920,7 +919,7 @@ document.getElementById('openAnswersBtn').addEventListener('click', () => { rend
 document.getElementById('closeAnswersBtn').addEventListener('click', () => answersDrawer.classList.remove('open'));
 document.getElementById('refreshAnswersBtn').addEventListener('click', () => renderAnswers());
 
-/* 一键恢复初始模板（彻底重置包括心动值滑杆） */
+/* 一键恢复初始模板 */
 document.getElementById('resetDefaultBtn').addEventListener('click', () => {
   if (confirm("确定要恢复默认初始模板吗？当前保存的草稿和心动值将被彻底重置。")) {
     localStorage.removeItem('MY_CONFESS_CONFIG_FINAL');
