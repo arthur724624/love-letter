@@ -386,7 +386,7 @@
 <div id="scrollProgress"></div>
 <div id="pixelGrid"></div>
 
-<!-- 顶部工具栏（仅表白者可见） -->
+<!-- 顶部工具栏（仅表白者端可见） -->
 <div id="topBar">
   <button class="control-btn btn-edit" id="openDrawerBtn">
     <span>✏️ 专属表白工坊</span>
@@ -462,7 +462,8 @@
   </div>
   <div class="drawer-foot">
     <button class="btn-action" id="saveAndApplyBtn" style="background:var(--shin-green);color:#FFF;">✨ 保存并在本地预览</button>
-    <button class="btn-action" id="generateShareLinkBtn" style="background:var(--shin-blue);color:#FFF;">🚀 一键发布并生成 TA 的专属表白链接</button>
+    <button class="btn-action" id="generateShareLinkBtn" style="background:var(--shin-blue);color:#FFF;">🚀 生成 TA 的专属表白链接</button>
+    <button class="btn-action" id="resetDefaultBtn" style="background:#FFF;color:#64748B;font-size:0.9rem;padding:9px;">🔄 恢复默认初始模板</button>
   </div>
 </div>
 
@@ -535,9 +536,9 @@
     </div>
     <div class="score-box" style="max-width:640px;margin:0 auto;">
       <div style="font-weight:800;color:#6C768A;">当前心动印象值</div>
-      <div class="score-display" id="authorLiveScoreVal">90%</div>
-      <input type="range" class="score-slider" id="authorScoreSlider" min="0" max="100" value="90">
-      <div class="score-comment" id="authorLiveScoreDesc">心动值持续攀升中，根本停不下来～</div>
+      <div class="score-display" id="authorLiveScoreVal">100%</div>
+      <input type="range" class="score-slider" id="authorScoreSlider" min="0" max="100" value="100">
+      <div class="score-comment" id="authorLiveScoreDesc">毫无疑问是满分心动！甚至爆表到了外太空～ 🚀</div>
     </div>
   </div>
 
@@ -552,8 +553,8 @@
       <!-- 上卡片：展示表白者给的心动值 -->
       <div class="score-box score-author-box">
         <div style="font-weight:900;color:var(--shin-purple);font-size:1.05rem;">💌 我给你的心动值</div>
-        <div class="score-display" id="authorScoreVal">90%</div>
-        <div class="score-comment" id="authorScoreDesc">心动值持续攀升中，根本停不下来～</div>
+        <div class="score-display" id="authorScoreVal">100%</div>
+        <div class="score-comment" id="authorScoreDesc">毫无疑问是满分心动！甚至爆表到了外太空～ 🚀</div>
       </div>
       <!-- 下卡片：供 TA 自己滑动打分 -->
       <div class="score-box">
@@ -669,9 +670,9 @@ const DEFAULT_CONFIG = {
   firstImpText: "刚认识你的时候，总觉得你文静又带着点距离感，连跟你说话都要在心里打好几遍草稿。",
   nowImpTitle: "原来是个可可爱爱的捣蛋鬼",
   nowImpText: "熟悉之后才发现，你笑起来眼睛会弯成月牙，吃好吃的会摇头晃脑，完全就是元气小可爱！",
-  authorScoreNum: 90,
-  authorScoreVal: "90%",
-  authorScoreDesc: "心动值持续攀升中，根本停不下来～",
+  authorScoreNum: 100,
+  authorScoreVal: "520% 🚀",
+  authorScoreDesc: "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀",
   meetText: "想知道你的喜怒哀乐、喜欢吃什么口味的冰淇淋，以及所有关于你的可爱细节。",
   developText: "不仅仅是分享日常的朋友，更想成为那个可以正大光明牵你的手、陪你很久的人。",
   meetYesReply: "太棒啦！新的快乐之旅开启 🎈",
@@ -732,6 +733,7 @@ function checkAccessMode() {
     isViewerMode = false;
     document.getElementById('authorScoreSectionWrap').style.display = 'block';
     document.getElementById('viewerScoreSectionWrap').style.display = 'none';
+    // 读取本地保存的草稿
     const localSaved = localStorage.getItem('MY_CONFESS_CONFIG_FINAL');
     if (localSaved) {
       try { CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, JSON.parse(localSaved)); } catch(e){}
@@ -748,10 +750,9 @@ function renderPage() {
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
   
-  // 同步心动值展示
-  const scoreNum = CURRENT_CONFIG.authorScoreNum || 90;
-  const scoreVal = CURRENT_CONFIG.authorScoreVal || "90%";
-  const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "心动值持续攀升中，根本停不下来～";
+  const scoreNum = CURRENT_CONFIG.authorScoreNum || 100;
+  const scoreVal = CURRENT_CONFIG.authorScoreVal || "520% 🚀";
+  const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
   
   document.getElementById('authorLiveScoreVal').textContent = scoreVal;
   document.getElementById('authorLiveScoreDesc').textContent = scoreDesc;
@@ -821,14 +822,14 @@ function renderPage() {
   }
 }
 
-/* 表白者滑动滑杆时，实时更新并保存心动值 */
+/* 表白者滑动滑杆时，实时绑定心动值并保存草稿 */
 const authorScoreSlider = document.getElementById('authorScoreSlider');
 function updateAuthorScore(v) {
   let valText = v + "%";
   let descText = "心动值持续攀升中，感觉非常棒！✨";
   if (v === 100) {
     valText = "520% 🚀";
-    descText = "毫无疑问是满分心动！甚至爆表到了外太空～";
+    descText = "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
     if (window.confetti) confetti({ particleCount: 35, spread: 60, origin: { y: 0.6 } });
   } else if (v >= 80) {
     descText = "心动值持续攀升中，根本停不下来～";
@@ -902,11 +903,22 @@ document.getElementById('openAnswersBtn').addEventListener('click', () => { rend
 document.getElementById('closeAnswersBtn').addEventListener('click', () => answersDrawer.classList.remove('open'));
 document.getElementById('refreshAnswersBtn').addEventListener('click', () => renderAnswers());
 
+/* 一键恢复初始模板（清空本地缓存） */
+document.getElementById('resetDefaultBtn').addEventListener('click', () => {
+  if (confirm("确定要恢复默认初始模板吗？当前保存的草稿将被重置。")) {
+    localStorage.removeItem('MY_CONFESS_CONFIG_FINAL');
+    CURRENT_CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    initDrawerForm();
+    renderPage();
+    alert("🔄 已成功恢复为纯净初始模板！");
+  }
+});
+
 document.getElementById('saveAndApplyBtn').addEventListener('click', () => {
   collectDrawerForm();
   localStorage.setItem('MY_CONFESS_CONFIG_FINAL', JSON.stringify(CURRENT_CONFIG));
   renderPage(); customDrawer.classList.remove('open');
-  alert("✨ 修改已成功保存在本地草稿并应用预览！");
+  alert("✨ 修改已成功保存在本地并应用预览！");
 });
 
 document.getElementById('generateShareLinkBtn').addEventListener('click', () => {
@@ -916,7 +928,7 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
   const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
   
   navigator.clipboard.writeText(shareUrl).then(() => {
-    alert("🎉 TA 的专属心动链接已生成并复制到剪贴板！\n发给 TA，对方看到的就是你设定的具体心动分（" + CURRENT_CONFIG.authorScoreVal + "）！");
+    alert("🎉 TA 的专属心动链接已生成并复制到剪贴板！\n发给 TA，对方看到的就是你设定的心动分与定制内容！");
   }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
 });
 
@@ -1000,7 +1012,7 @@ viewerScoreSlider.addEventListener('input', (e) => {
   const valEl = document.getElementById('viewerScoreVal');
   const descEl = document.getElementById('viewerScoreDesc');
   if (v === 100) {
-    valEl.textContent = "520% 🚀"; descEl.textContent = "毫无疑问是满分心动！甚至爆表到了外太空～";
+    valEl.textContent = "520% 🚀"; descEl.textContent = "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
     if (window.confetti) confetti({ particleCount: 40, spread: 60, origin: { y: 0.6 } });
   } else if (v >= 80) {
     valEl.textContent = v + "%"; descEl.textContent = "心动值持续攀升中，感觉非常棒！✨";
