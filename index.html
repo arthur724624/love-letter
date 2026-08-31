@@ -209,7 +209,7 @@
   .car-stage { position: relative; margin-top: 36px; cursor: pointer; }
   .car-img { width: 210px; height: auto; filter: drop-shadow(0 14px 22px rgba(255, 71, 105, 0.25)); }
   .click-badge {
-    position: absolute bottom: -8px; right: -8px;
+    position: absolute; bottom: -8px; right: -8px;
     background: var(--shin-yellow); font-size: 0.85rem; font-weight: 900;
     padding: 5px 14px; border-radius: 16px; border: 2px solid var(--dark-ink);
     box-shadow: 3px 3px 0 var(--dark-ink);
@@ -819,7 +819,7 @@
   </div>
 
   <div class="power-battle-stage" id="battleStage">
-    <!-- 左边：粉色竖向能量柱 -->
+    <!-- 左边：竖向能量柱 -->
     <div class="vertical-meter-wrap" id="meterWrap">
       <div class="vertical-meter-track" id="meterTrack">
         <div class="vertical-meter-fill" id="meterFill">
@@ -829,7 +829,7 @@
       <div class="meter-pct-badge" id="meterLabel">0%</div>
     </div>
 
-    <!-- 右边：纯净小新主体 -->
+    <!-- 右边：小新发射台 -->
     <div class="shin-cannon-wrap" id="tapArea">
       <div class="shin-figure-box">
         <div class="shin-body-canvas" id="shinBody">
@@ -887,7 +887,7 @@
 <footer>Made with ❤️ & Crayon Shin-chan Style · 调皮且真诚</footer>
 
 <script>
-// UTF-8 安全 Base64 编解码器（彻底修复包含中文与 Emoji 时导致的解码报错）
+// UTF-8 安全 Base64 编解码器（彻底杜绝中文乱码与解析中断报错）
 function utoa(str) {
   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (match, p1) => {
     return String.fromCharCode('0x' + p1);
@@ -982,7 +982,7 @@ function checkAccessMode() {
       const decoded = JSON.parse(atou(rawData));
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {
-      console.error("配置解析失败，采用默认配置:", e);
+      console.error("配置解析异常，已回退默认模板:", e);
     }
   } else {
     isViewerMode = false;
@@ -1021,7 +1021,7 @@ function renderPage() {
   document.getElementById('developText').textContent = CURRENT_CONFIG.developText;
   document.getElementById('letterBody').textContent = CURRENT_CONFIG.letterBody;
 
-  // 渲染理由
+  // 渲染理由卡片
   const reasonGrid = document.getElementById('reasonGrid');
   reasonGrid.innerHTML = '';
   CURRENT_CONFIG.reasons.forEach((r, i) => {
@@ -1050,7 +1050,7 @@ function renderPage() {
     reasonGrid.appendChild(card);
   });
 
-  // 渲染放映厅
+  // 渲染高光放映厅
   const reel = document.getElementById('reel');
   reel.innerHTML = '';
   CURRENT_CONFIG.memories.forEach(m => {
@@ -1078,7 +1078,7 @@ function renderPage() {
   }
 }
 
-/* 滑杆逻辑 */
+/* 心动滑杆逻辑 */
 const authorScoreSlider = document.getElementById('authorScoreSlider');
 function updateAuthorScore(v) {
   const num = Number(v);
@@ -1106,24 +1106,36 @@ function updateAuthorScore(v) {
 }
 authorScoreSlider.addEventListener('input', (e) => updateAuthorScore(e.target.value));
 
-/* 本地图片安全超强压缩引擎 */
+/* 本地图片极速 WebP 强力降采样压缩引擎 */
 function processLocalImage(file, callback) {
   const reader = new FileReader();
   reader.onload = (e) => {
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
-      const maxSide = 240;
+      const maxSide = 180; // 严控尺寸以压缩 Base64 长度
       let w = img.width, h = img.height;
+      
       if (w > h) {
         if (w > maxSide) { h = Math.round((h * maxSide) / w); w = maxSide; }
       } else {
         if (h > maxSide) { w = Math.round((w * maxSide) / h); h = maxSide; }
       }
-      canvas.width = w; canvas.height = h;
+      
+      canvas.width = w;
+      canvas.height = h;
       const ctx = canvas.getContext('2d');
+      
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'medium';
       ctx.drawImage(img, 0, 0, w, h);
-      callback(canvas.toDataURL('image/jpeg', 0.5));
+      
+      let dataUrl = canvas.toDataURL('image/webp', 0.55);
+      if (!dataUrl.startsWith('data:image/webp')) {
+        dataUrl = canvas.toDataURL('image/jpeg', 0.5);
+      }
+      
+      callback(dataUrl);
     };
     img.src = e.target.result;
   };
@@ -1160,7 +1172,7 @@ function initDrawerForm() {
       <input type="hidden" class="m-img-data" value="${m.img}">
       <div style="display:flex;align-items:center;gap:12px;margin-top:4px;">
         <label class="btn-upload-local">
-          📁 从相册选图
+          📁 从手机/电脑相册选图
           <input type="file" accept="image/*" class="m-file-input" style="display:none;">
         </label>
         <img class="upload-preview-thumb" src="${m.img}">
@@ -1177,7 +1189,7 @@ function initDrawerForm() {
         processLocalImage(e.target.files[0], (base64) => {
           hiddenData.value = base64;
           thumb.src = base64;
-          statusText.textContent = "✅ 照片已就绪！";
+          statusText.textContent = "✅ 本地照片已就绪！";
         });
       }
     });
@@ -1232,7 +1244,7 @@ document.getElementById('openAnswersBtn').addEventListener('click', () => { rend
 document.getElementById('closeAnswersBtn').addEventListener('click', () => answersDrawer.classList.remove('open'));
 document.getElementById('refreshAnswersBtn').addEventListener('click', () => renderAnswers());
 
-/* 答卷面板：清空所有答卷记录 */
+/* 清空所有答卷记录 */
 document.getElementById('clearAnswersBtn').addEventListener('click', () => {
   if (confirm("确定要清空所有历史答卷与心动值记录吗？")) {
     StateService.clearAnswers();
@@ -1281,14 +1293,10 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
     const encoded = utoa(JSON.stringify(CURRENT_CONFIG));
     const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '#data=' + encoded;
     
-    if (shareUrl.length > 5000) {
-      alert("⚠️ 提示：因为包含了较多/较大的本地照片，链接较长。建议直接复制完整链接发给 TA！");
-    }
-
     navigator.clipboard.writeText(shareUrl).then(() => {
-      alert("🎉 TA 的专属心动链接已生成并复制到剪贴板！\n中文与心动值【" + CURRENT_CONFIG.authorScoreVal + "】已安全打包！");
-    }).catch(() => prompt("请手动复制以下给 TA 的专属链接：", shareUrl));
-  } catch (err) {
+      alert("🎉 TA 的专属心动链接已生成并复制！\n包含心动值【" + CURRENT_CONFIG.authorScoreVal + "】与照片已安全打包！");
+    }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
+  } catch(err) {
     alert("生成链接失败：" + err.message);
   }
 });
