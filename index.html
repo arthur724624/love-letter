@@ -149,7 +149,7 @@
     width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 1.5px solid #CBD5E1; display: block;
   }
   .upload-status-text {
-    font-size: 0.8rem; font-weight: 700; color: #64748B;
+    font-size: 0.8rem; font-weight: 700; color: #2FC980;
   }
   
   .drawer-foot {
@@ -498,7 +498,7 @@
     <div id="reasonsInputsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
-    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅相册上传（直接选图）</div>
+    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅相册（支持手机/电脑直选）</div>
     <div id="memoriesInputsContainer" style="display:flex;flex-direction:column;gap:12px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
@@ -718,6 +718,14 @@
 <footer>Made with ❤️ & Crayon Shin-chan Style · 调皮且真诚</footer>
 
 <script>
+/* 内置 4 张免外链高颜值蜡笔小新主题插画（纯原生绘制，永不失效） */
+const DEFAULT_UI_IMAGES = [
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='270' viewBox='0 0 280 270'><rect width='280' height='270' fill='%23FFEBEF'/><circle cx='140' cy='120' r='60' fill='%23FFD026'/><text x='140' y='125' font-size='46' text-anchor='middle'>🥰</text><text x='140' y='210' font-size='18' font-weight='bold' fill='%23FF4769' text-anchor='middle'>初次相遇的心动 ✨</text></svg>",
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='270' viewBox='0 0 280 270'><rect width='280' height='270' fill='%23EAF3FF'/><circle cx='140' cy='120' r='60' fill='%233E8BFF' opacity='0.2'/><text x='140' y='125' font-size='46' text-anchor='middle'>😴</text><text x='140' y='210' font-size='18' font-weight='bold' fill='%233E8BFF' text-anchor='middle'>互道晚安的日常 🌙</text></svg>",
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='270' viewBox='0 0 280 270'><rect width='280' height='270' fill='%23FFF8E7'/><circle cx='140' cy='120' r='60' fill='%23FFD026' opacity='0.3'/><text x='140' y='125' font-size='46' text-anchor='middle'>🍰</text><text x='140' y='210' font-size='18' font-weight='bold' fill='%23D48806' text-anchor='middle'>一起吃甜品小吃 🍦</text></svg>",
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='270' viewBox='0 0 280 270'><rect width='280' height='270' fill='%23E9FAF1'/><circle cx='140' cy='120' r='60' fill='%232FC980' opacity='0.25'/><text x='140' y='125' font-size='46' text-anchor='middle'>🎉</text><text x='140' y='210' font-size='18' font-weight='bold' fill='%232FC980' text-anchor='middle'>一起打闹的快乐时光 🎈</text></svg>"
+];
+
 const DEFAULT_CONFIG = {
   herName: "你", yourName: "我",
   firstImpTitle: "看起来有点高冷的小仙女",
@@ -742,10 +750,10 @@ const DEFAULT_CONFIG = {
     {title:"根本不需要理由", text:"其实喜欢你到最后，哪怕什么都不做，只要你在身边就觉得很安心、很开心。"}
   ],
   memories: [
-    {img: "https://i.postimg.cc/yDr67G1r/preview-(1).webp", cap: "第一次畅聊到深夜", date: "MEMORIES 01"},
-    {img: "https://i.postimg.cc/5Xk9fr43/preview-(5).webp", cap: "互道晚安的困困日常", date: "MEMORIES 02"},
-    {img: "https://i.postimg.cc/87nkTYpw/preview-(3).webp", cap: "一起分享美味小零食", date: "MEMORIES 03"},
-    {img: "https://i.postimg.cc/gxBcG7zq/preview-(6).webp", cap: "打打闹闹的搞笑时光", date: "MEMORIES 04"}
+    {img: DEFAULT_UI_IMAGES[0], cap: "第一次畅聊到深夜", date: "MEMORIES 01"},
+    {img: DEFAULT_UI_IMAGES[1], cap: "互道晚安的困困日常", date: "MEMORIES 02"},
+    {img: DEFAULT_UI_IMAGES[2], cap: "一起分享美味小零食", date: "MEMORIES 03"},
+    {img: DEFAULT_UI_IMAGES[3], cap: "打打闹闹的搞笑时光", date: "MEMORIES 04"}
   ],
   letterBody: "认识你之后，我的废话变多了，相册里全是你的表情，心里也总是塞满了奇奇怪怪又暖洋洋的小念头。我知道自己有时有点笨拙，但每一份心意都是真的：我喜欢你，想把以后的每一次日出、每一顿美食，和每一个搞怪日常都分享给你。",
   yesReply: "太棒啦！！🥳 动感光波发射成功！从今天起，你的搞怪与可爱就由我全权承包咯～✨",
@@ -775,7 +783,6 @@ function checkAccessMode() {
   if (room) CURRENT_ROOM_ID = room;
 
   if (viewData) {
-    // 【被表白者模式】：从 URL 解密数据
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
     document.getElementById('authorScoreSectionWrap').style.display = 'none';
@@ -785,7 +792,6 @@ function checkAccessMode() {
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
-    // 【表白者模式】：读取本地保存的草稿
     isViewerMode = false;
     document.getElementById('authorScoreSectionWrap').style.display = 'block';
     document.getElementById('viewerScoreSectionWrap').style.display = 'none';
@@ -805,7 +811,7 @@ function renderPage() {
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
   
-  // 严格渲染心动值
+  // 严格从 CURRENT_CONFIG 读取并渲染心动值
   const scoreNum = CURRENT_CONFIG.authorScoreNum !== undefined ? Number(CURRENT_CONFIG.authorScoreNum) : 100;
   const scoreVal = CURRENT_CONFIG.authorScoreVal || (scoreNum === 100 ? "520% 🚀" : scoreNum + "%");
   const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
@@ -815,7 +821,6 @@ function renderPage() {
     document.getElementById('authorLiveScoreDesc').textContent = scoreDesc;
     document.getElementById('authorScoreSlider').value = scoreNum;
   } else {
-    // 被表白者端：强行写入从 URL 解密出的具体数值与描述
     document.getElementById('authorScoreVal').textContent = scoreVal;
     document.getElementById('authorScoreDesc').textContent = scoreDesc;
   }
@@ -881,7 +886,7 @@ function renderPage() {
   }
 }
 
-/* 滑杆实时逻辑 */
+/* 滑杆逻辑 */
 const authorScoreSlider = document.getElementById('authorScoreSlider');
 function updateAuthorScore(v) {
   const num = Number(v);
@@ -909,38 +914,28 @@ function updateAuthorScore(v) {
 }
 authorScoreSlider.addEventListener('input', (e) => updateAuthorScore(e.target.value));
 
-/* 免图床云端图片上传核心：自动上传至公共 CDN 生成短 URL */
-function uploadToFreeImageCDN(file, onProgress, onSuccess, onError) {
-  onProgress("正在自动上传照片到云端...");
-  const formData = new FormData();
-  formData.append('image', file);
-  
-  fetch('https://api.imgbb.com/1/upload?key=6d207e02198a847aa5ad3ac2292fc142', {
-    method: 'POST',
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-    if (data && data.data && data.data.url) {
-      onSuccess(data.data.url);
-    } else {
-      throw new Error("Upload failed");
-    }
-  })
-  .catch(() => {
-    const altFormData = new FormData();
-    altFormData.append('file', file);
-    fetch('https://tmp-cli.animedb.cn/upload', {
-      method: 'POST',
-      body: altFormData
-    })
-    .then(r=>r.json())
-    .then(d=>{
-      if(d && d.url) onSuccess(d.url);
-      else onError();
-    })
-    .catch(()=>onError());
-  });
+/* 本地图片微损极速压缩（单张 < 25KB，秒传且不占 URL 空间） */
+function processLocalImage(file, callback) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const maxSide = 280;
+      let w = img.width, h = img.height;
+      if (w > h) {
+        if (w > maxSide) { h = Math.round((h * maxSide) / w); w = maxSide; }
+      } else {
+        if (h > maxSide) { w = Math.round((w * maxSide) / h); h = maxSide; }
+      }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', 0.65));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
 }
 
 function initDrawerForm() {
@@ -963,7 +958,7 @@ function initDrawerForm() {
     container.appendChild(box);
   });
 
-  // 放映厅照片
+  // 放映厅照片直接选图
   const memContainer = document.getElementById('memoriesInputsContainer');
   memContainer.innerHTML = '';
   c.memories.forEach((m, idx) => {
@@ -972,7 +967,7 @@ function initDrawerForm() {
     box.innerHTML = `
       <span style="font-size:0.85rem;font-weight:900;color:var(--shin-blue);">📸 拍立得照片 ${idx+1}</span>
       <input type="text" class="form-input m-cap" placeholder="照片标题（如：第一次聊天）" value="${m.cap}">
-      <input type="hidden" class="m-img-url" value="${m.img}">
+      <input type="hidden" class="m-img-data" value="${m.img}">
       <div style="display:flex;align-items:center;gap:12px;margin-top:4px;">
         <label class="btn-upload-local">
           📁 从手机/电脑相册选图
@@ -980,29 +975,20 @@ function initDrawerForm() {
         </label>
         <img class="upload-preview-thumb" src="${m.img}">
       </div>
-      <div class="upload-status-text"></div>
+      <div class="upload-status-text">已加载图片</div>
     `;
     const fileInput = box.querySelector('.m-file-input');
     const thumb = box.querySelector('.upload-preview-thumb');
-    const hiddenUrl = box.querySelector('.m-img-url');
+    const hiddenData = box.querySelector('.m-img-data');
     const statusText = box.querySelector('.upload-status-text');
 
     fileInput.addEventListener('change', (e) => {
       if (e.target.files && e.target.files[0]) {
-        uploadToFreeImageCDN(
-          e.target.files[0],
-          (msg) => { statusText.textContent = msg; statusText.style.color = '#3E8BFF'; },
-          (cloudUrl) => {
-            hiddenUrl.value = cloudUrl;
-            thumb.src = cloudUrl;
-            statusText.textContent = "✅ 上传成功！已生成安全短链接";
-            statusText.style.color = '#2FC980';
-          },
-          () => {
-            statusText.textContent = "❌ 上传失败，请检查网络后重试";
-            statusText.style.color = '#FF4769';
-          }
-        );
+        processLocalImage(e.target.files[0], (base64) => {
+          hiddenData.value = base64;
+          thumb.src = base64;
+          statusText.textContent = "✅ 本地照片已就绪！";
+        });
       }
     });
     memContainer.appendChild(box);
@@ -1040,11 +1026,11 @@ function collectDrawerForm() {
 
   // 收集放映厅照片
   const mcaps = document.querySelectorAll('.m-cap');
-  const mimgUrls = document.querySelectorAll('.m-img-url');
+  const mimgData = document.querySelectorAll('.m-img-data');
   mcaps.forEach((c, i) => {
     CURRENT_CONFIG.memories[i] = {
       cap: c.value.trim() || `MEMORIES 0${i+1}`,
-      img: mimgUrls[i].value || CURRENT_CONFIG.memories[i].img,
+      img: mimgData[i].value || CURRENT_CONFIG.memories[i].img,
       date: `MEMORIES 0${i+1}`
     };
   });
@@ -1059,7 +1045,7 @@ document.getElementById('openAnswersBtn').addEventListener('click', () => { rend
 document.getElementById('closeAnswersBtn').addEventListener('click', () => answersDrawer.classList.remove('open'));
 document.getElementById('refreshAnswersBtn').addEventListener('click', () => renderAnswers());
 
-/* 一键恢复初始模板（彻底重置包括心动值滑杆与放映厅照片） */
+/* 一键恢复初始模板（全面彻底重置） */
 document.getElementById('resetDefaultBtn').addEventListener('click', () => {
   if (confirm("确定要恢复默认初始模板吗？包括心动值和导入的照片都会恢复成最初状态。")) {
     localStorage.removeItem('MY_CONFESS_CONFIG_FINAL');
