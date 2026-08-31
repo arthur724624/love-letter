@@ -15,40 +15,50 @@
     --shin-blue: #3E8BFF;
     --shin-purple: #7C5CFC;
     --dark-ink: #181926;
-    --card-glass: rgba(255, 255, 255, 0.94);
-    --border-glass: rgba(255, 255, 255, 0.95);
+    --card-bg: rgba(255, 255, 255, 0.96);
+    --page-bg: #FAF7F2;
     --ink-soft: #6C768A;
   }
 
   body.night {
+    --page-bg: #0C0F1D;
     --dark-ink: #F2F1F6;
     --ink-soft: #9AA6BC;
-    --card-glass: rgba(24, 28, 48, 0.92);
-    --border-glass: rgba(255, 255, 255, 0.16);
+    --card-bg: rgba(26, 31, 53, 0.94);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
-  /* 彻底内嵌原生 SVG 纯净小新睡衣图案（绿圆、红三角、黄方块，带微斜排布），永不失效 */
   body {
     font-family: 'Noto Sans SC', sans-serif;
     color: var(--dark-ink);
     overflow-x: hidden;
     position: relative;
     min-height: 100vh;
-    background-color: #FAF8F5;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="220" viewBox="0 0 160 220"><g stroke="%23181926" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="28" cy="40" r="14" fill="%232FC980"/><polygon points="120,18 138,48 102,48" fill="%23FF4769"/><rect x="68" y="90" width="26" height="26" rx="4" fill="%23FFD026" transform="rotate(18 81 103)"/><polygon points="38,150 54,180 22,180" fill="%23FF4769" transform="rotate(-15 38 165)"/><circle cx="126" cy="140" r="15" fill="%232FC980"/><rect x="18" y="200" width="24" height="24" rx="4" fill="%23FFD026" transform="rotate(40 30 212)"/><circle cx="85" cy="195" r="13" fill="%232FC980"/><polygon points="140,195 156,220 124,220" fill="%23FF4769"/></g></svg>');
-    background-size: 160px 220px;
-    background-repeat: repeat;
-    background-attachment: fixed;
+    background-color: var(--page-bg);
     transition: background 0.4s ease, color 0.4s ease;
   }
 
-  body.night {
-    background-color: #0E111F;
-    background-image: radial-gradient(circle at 50% 20%, #1A213D 0%, #0A0D18 100%);
+  /* 白天模式背景层：柔和低饱和睡衣几何印花（不刺眼、不抢文字） */
+  #dayBg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="220" viewBox="0 0 160 220"><g stroke="%232B2D42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.18"><circle cx="28" cy="40" r="14" fill="%232FC980"/><polygon points="120,18 138,48 102,48" fill="%23FF4769"/><rect x="68" y="90" width="26" height="26" rx="4" fill="%23FFD026" transform="rotate(18 81 103)"/><polygon points="38,150 54,180 22,180" fill="%23FF4769" transform="rotate(-15 38 165)"/><circle cx="126" cy="140" r="15" fill="%232FC980"/><rect x="18" y="200" width="24" height="24" rx="4" fill="%23FFD026" transform="rotate(40 30 212)"/><circle cx="85" cy="195" r="13" fill="%232FC980"/><polygon points="140,195 156,220 124,220" fill="%23FF4769"/></g></svg>');
+    background-size: 160px 220px;
+    background-repeat: repeat;
+    transition: opacity 0.5s ease;
   }
+
+  /* 夜间模式背景层：雪山星空沉浸式暗夜场景 */
+  #nightBg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(circle at 50% 15%, #1D2545 0%, #090B15 100%),
+                radial-gradient(circle at 20% 80%, rgba(62,139,255,0.15) 0%, transparent 40%);
+    transition: opacity 0.5s ease;
+  }
+  body.night #dayBg { opacity: 0; }
+  body.night #nightBg { opacity: 1; }
 
   h1, h2, h3, .fun-font { font-family: 'Baloo 2', 'Noto Sans SC', cursive; }
   .serif { font-family: 'Fraunces', serif; }
@@ -129,9 +139,10 @@
   #progressNav {
     position: fixed; right: 24px; top: 50%;
     transform: translateY(-50%); display: flex; flex-direction: column; gap: 14px;
-    z-index: 100; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
+    z-index: 100; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px);
     padding: 14px 8px; border-radius: 30px; border: 2px solid #181926; box-shadow: 2px 3px 0 var(--dark-ink);
   }
+  body.night #progressNav { background: rgba(26, 31, 53, 0.92); border-color: rgba(255,255,255,0.3); }
   #progressNav .dot {
     width: 9px; height: 9px; border-radius: 50%;
     background: rgba(24, 25, 38, 0.3); cursor: pointer; transition: all .35s;
@@ -151,19 +162,20 @@
     text-align: center; background: transparent;
   }
   .tag-pill {
-    padding: 8px 22px; border-radius: 999px; background: rgba(255, 255, 255, 0.95);
+    padding: 8px 22px; border-radius: 999px; background: #FFF;
     border: 2px solid var(--dark-ink); box-shadow: 3px 4px 0 var(--dark-ink);
     font-size: 0.95rem; font-weight: 900; color: #181926; margin-bottom: 24px;
   }
+  body.night .tag-pill { background: #1A1F35; color: #FFF; border-color: rgba(255,255,255,0.4); }
   #hero h1 { font-size: clamp(2.5rem, 6.5vw, 4.2rem); line-height: 1.25; font-weight: 900; }
   #hero h1 span.accent { color: var(--shin-red); position: relative; display: inline-block; }
   #hero p.sub {
     margin-top: 20px; max-width: 540px; font-size: 1.15rem; font-weight: 700;
     color: var(--dark-ink); line-height: 1.8;
-    background: rgba(255, 255, 255, 0.95); padding: 10px 18px; border-radius: 16px;
+    background: #FFF; padding: 12px 20px; border-radius: 18px;
     border: 2px solid var(--dark-ink); box-shadow: 3px 4px 0 var(--dark-ink);
   }
-  body.night #hero p.sub { background: rgba(24, 28, 48, 0.95); color: #F2F1F6; border-color: rgba(255,255,255,0.2); }
+  body.night #hero p.sub { background: #1A1F35; color: #F2F1F6; border-color: rgba(255,255,255,0.3); }
 
   .car-stage { position: relative; margin-top: 36px; cursor: pointer; }
   .car-img { width: 210px; height: auto; filter: drop-shadow(0 14px 22px rgba(255, 71, 105, 0.25)); }
@@ -174,16 +186,17 @@
     box-shadow: 3px 3px 0 var(--dark-ink);
   }
 
-  /* 印象对比 */
+  /* 印象对比卡片：提高不透明度，阻隔背景图案透光 */
   .compare-container {
     max-width: 960px; margin: 0 auto;
     display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 26px;
   }
   .compare-card {
-    background: var(--card-glass); backdrop-filter: blur(16px);
+    background: var(--card-bg);
     border: 2.5px solid var(--dark-ink); border-radius: 28px;
     padding: 36px 30px; position: relative; box-shadow: 5px 7px 0 var(--dark-ink);
   }
+  body.night .compare-card { border-color: rgba(255,255,255,0.3); }
   .compare-card .tag-label {
     display: inline-block; font-size: 0.85rem; font-weight: 900;
     padding: 4px 14px; border-radius: 20px; margin-bottom: 16px;
@@ -192,6 +205,7 @@
   .tag-now { background: #E6F8F0; color: var(--shin-green); }
   .compare-card h3 { font-size: 1.35rem; margin-bottom: 12px; }
   .compare-card p { font-size: 1.05rem; color: #4A5568; line-height: 1.85; }
+  body.night .compare-card p { color: #CBD5E1; }
 
   /* 心动值容器 */
   .score-dual-container {
@@ -199,13 +213,15 @@
     display: flex; flex-direction: column; gap: 22px;
   }
   .score-box {
-    background: var(--card-glass); backdrop-filter: blur(16px);
+    background: var(--card-bg);
     border: 3px solid var(--dark-ink); border-radius: 30px;
     padding: 34px 28px; box-shadow: 6px 8px 0 var(--dark-ink); text-align: center;
   }
+  body.night .score-box { border-color: rgba(255,255,255,0.3); }
   .score-author-box {
     background: #FFFDF5; border-color: var(--shin-yellow);
   }
+  body.night .score-author-box { background: #222947; }
   .score-display {
     font-size: 3rem; font-weight: 900; color: var(--shin-red);
     margin: 10px 0; font-family: 'Baloo 2', cursive;
@@ -222,13 +238,15 @@
     display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 26px;
   }
   .challenge-card {
-    background: var(--card-glass); backdrop-filter: blur(16px);
+    background: var(--card-bg);
     border: 2.5px solid var(--dark-ink); border-radius: 28px;
     padding: 38px 28px; box-shadow: 5px 7px 0 var(--dark-ink); text-align: center;
     display: flex; flex-direction: column; justify-content: space-between;
   }
+  body.night .challenge-card { border-color: rgba(255,255,255,0.3); }
   .challenge-card h3 { font-size: 1.3rem; margin-bottom: 12px; }
   .challenge-card p { font-size: 1rem; color: #6C768A; line-height: 1.7; margin-bottom: 24px; }
+  body.night .challenge-card p { color: #CBD5E1; }
   .choice-btns { display: flex; gap: 14px; justify-content: center; align-items: center; position: relative; min-height: 52px; }
   
   .c-yes-btn {
@@ -263,7 +281,7 @@
     border: 1px dashed var(--shin-purple);
   }
 
-  /* 理由卡片 */
+  /* 理由卡片：采用高不透明度白底，字迹清晰 */
   .reason-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
     gap: 26px; max-width: 1100px; margin: 0 auto;
@@ -277,10 +295,11 @@
   .reason-card .face {
     position: absolute; inset: 0; backface-visibility: hidden;
     border-radius: 26px; border: 2.5px solid var(--dark-ink);
-    background: var(--card-glass); backdrop-filter: blur(14px);
+    background: var(--card-bg);
     box-shadow: 4px 6px 0 var(--dark-ink); padding: 30px 26px;
     display: flex; flex-direction: column;
   }
+  body.night .reason-card .face { border-color: rgba(255,255,255,0.3); }
   .reason-card .face.back {
     transform: rotateY(180deg); justify-content: center;
     background: linear-gradient(155deg, var(--shin-red), #FF6B85); color: #FFF; border: 2.5px solid var(--dark-ink);
@@ -293,9 +312,9 @@
   /* 放映厅 */
   #memories {
     position: relative;
-    background: #181C30;
+    background: #15192C;
     color: #FFF; border-radius: 46px; margin: 20px 16px; padding: 110px 24px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.35); border: 3px solid var(--dark-ink);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.4); border: 3px solid var(--dark-ink);
   }
   #memories .section-head h2 { color: #FFF; }
   #memories .section-head p { color: #CBD5E1; }
@@ -388,6 +407,8 @@
 </head>
 <body>
 
+<div id="dayBg"></div>
+<div id="nightBg"></div>
 <div id="scrollProgress"></div>
 
 <!-- 顶部工具栏 -->
@@ -723,7 +744,6 @@ function checkAccessMode() {
   if (room) CURRENT_ROOM_ID = room;
 
   if (viewData) {
-    // 【被表白者模式】：从 URL 解密数据，优先级最高
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
     document.getElementById('authorScoreSectionWrap').style.display = 'none';
@@ -733,7 +753,6 @@ function checkAccessMode() {
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
-    // 【表白者模式】：读取本地保存的草稿
     isViewerMode = false;
     document.getElementById('authorScoreSectionWrap').style.display = 'block';
     document.getElementById('viewerScoreSectionWrap').style.display = 'none';
@@ -753,7 +772,6 @@ function renderPage() {
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
   
-  // 严格根据 CURRENT_CONFIG 渲染心动值
   const scoreNum = CURRENT_CONFIG.authorScoreNum !== undefined ? CURRENT_CONFIG.authorScoreNum : 100;
   const scoreVal = CURRENT_CONFIG.authorScoreVal || (scoreNum === 100 ? "520% 🚀" : scoreNum + "%");
   const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
@@ -763,7 +781,6 @@ function renderPage() {
     document.getElementById('authorLiveScoreDesc').textContent = scoreDesc;
     document.getElementById('authorScoreSlider').value = scoreNum;
   } else {
-    // 被表白者端：强制锁定并展示从 URL 解析出的值
     document.getElementById('authorScoreVal').textContent = scoreVal;
     document.getElementById('authorScoreDesc').textContent = scoreDesc;
   }
@@ -829,7 +846,7 @@ function renderPage() {
   }
 }
 
-/* 滑杆逻辑：滑动时即刻更新并持久化 */
+/* 滑杆逻辑 */
 const authorScoreSlider = document.getElementById('authorScoreSlider');
 function updateAuthorScore(v) {
   let valText = v + "%";
@@ -894,7 +911,6 @@ function collectDrawerForm() {
   CURRENT_CONFIG.yesReply = getVal('cfg_yesReply', "");
   CURRENT_CONFIG.finalNoReply = getVal('cfg_finalNoReply', "千万别有压力！继续做开心果！");
 
-  // 严格抓取当前滑杆实际数值
   const currentSliderVal = parseInt(document.getElementById('authorScoreSlider').value);
   updateAuthorScore(currentSliderVal);
 
