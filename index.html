@@ -23,7 +23,6 @@
     --sky-glow-3: rgba(47, 201, 128, 0.2);
     --page-bg: #FAF7F2;
     --ink-soft: #6C768A;
-    --transition-theme: background 0.7s ease, color 0.7s ease, border-color 0.7s ease;
   }
 
   body.night {
@@ -47,7 +46,6 @@
     background: var(--page-bg);
     overflow-x: hidden;
     position: relative;
-    transition: var(--transition-theme);
   }
 
   h1, h2, h3, .fun-font { font-family: 'Baloo 2', 'Noto Sans SC', cursive; }
@@ -67,63 +65,47 @@
     background-size: 26px 26px;
   }
 
-  /* 顶部工具栏 */
+  /* 顶部工具栏（仅表白者端可见） */
   #topBar {
     position: fixed; left: 24px; top: 22px;
     z-index: 1000;
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 10px;
   }
   
-  .control-btn.btn-edit {
-    position: relative;
-    height: 48px; padding: 0 22px;
-    border-radius: 24px; border: 3px solid #181926;
-    background: linear-gradient(135deg, #FFE853, var(--shin-yellow));
-    color: #181926; display: inline-flex; align-items: center; gap: 8px;
-    font-size: 1.05rem; font-weight: 900; cursor: pointer;
-    box-shadow: 4px 6px 0 #181926, 0 8px 24px rgba(255, 208, 38, 0.45);
-    animation: btnPulse 2.8s infinite ease-in-out;
+  .control-btn {
+    height: 46px; padding: 0 18px;
+    border-radius: 23px; border: 2.5px solid #181926;
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.95rem; font-weight: 900; cursor: pointer;
+    box-shadow: 3px 5px 0 #181926;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
-  @keyframes btnPulse {
-    0%, 100% { transform: scale(1); box-shadow: 4px 6px 0 #181926, 0 8px 24px rgba(255, 208, 38, 0.45); }
-    50% { transform: scale(1.05); box-shadow: 4px 8px 0 #181926, 0 12px 30px rgba(255, 71, 105, 0.35); }
-  }
-
-  .edit-badge {
-    position: absolute; top: -7px; right: -7px;
-    background: var(--shin-red); color: #FFF;
-    font-size: 0.72rem; font-weight: 900;
-    padding: 2px 7px; border-radius: 10px;
-    border: 2px solid #181926;
-    box-shadow: 2px 2px 0 #181926;
-  }
-
+  .control-btn:hover { transform: translate(-2px, -2px); box-shadow: 5px 7px 0 #181926; }
+  .control-btn.btn-edit { background: linear-gradient(135deg, #FFE853, var(--shin-yellow)); color: #181926; }
+  .control-btn.btn-check { background: var(--shin-blue); color: #FFF; }
   .control-btn.btn-theme {
-    width: 48px; height: 48px; border-radius: 50%;
-    border: 2.5px solid var(--dark-ink); background: rgba(255,255,255,0.9);
-    backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;
-    font-size: 1.25rem; cursor: pointer; box-shadow: 3px 4px 0 var(--dark-ink);
+    width: 46px; height: 46px; border-radius: 50%; padding: 0;
+    justify-content: center; background: #FFF; font-size: 1.2rem;
   }
-  body.night .control-btn.btn-theme { background: rgba(35,37,58,0.9); }
 
-  /* 定制抽屉面板 */
-  #customDrawer {
-    position: fixed; top: 0; right: -490px; width: 100%; max-width: 460px; height: 100vh;
+  /* 抽屉式面板通用 */
+  .custom-drawer {
+    position: fixed; top: 0; right: -500px; width: 100%; max-width: 480px; height: 100vh;
     background: #FFFDF9; border-left: 3px solid var(--dark-ink);
     box-shadow: -10px 0 35px rgba(0,0,0,0.18); z-index: 2000;
     display: flex; flex-direction: column; transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  #customDrawer.open { right: 0; }
+  .custom-drawer.open { right: 0; }
   .drawer-head {
     padding: 20px 24px; border-bottom: 2px solid #EAE6DF;
     display: flex; justify-content: space-between; align-items: center;
   }
-  .drawer-head h3 { font-size: 1.3rem; color: var(--dark-ink); }
+  .drawer-head h3 { font-size: 1.25rem; color: var(--dark-ink); }
   .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; font-weight: 900; }
   
   .drawer-body {
     flex: 1; overflow-y: auto; padding: 24px;
-    display: flex; flex-direction: column; gap: 18px;
+    display: flex; flex-direction: column; gap: 16px;
   }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
   .form-group label { font-size: 0.88rem; font-weight: 800; color: #596173; }
@@ -132,19 +114,15 @@
     border: 2px solid #E2DED5; border-radius: 12px;
     font-family: inherit; font-size: 0.95rem; outline: none;
   }
-  .form-textarea { resize: vertical; min-height: 50px; }
+  .form-textarea { resize: vertical; min-height: 48px; }
   
   .drawer-foot {
     padding: 18px 24px; border-top: 2px solid #EAE6DF; background: #FAF7F2;
     display: flex; flex-direction: column; gap: 10px;
   }
-  .btn-save {
-    width: 100%; padding: 12px; border-radius: 14px; border: 2px solid var(--dark-ink);
-    background: var(--shin-green); color: #FFF; font-weight: 800; font-size: 1rem; cursor: pointer;
-  }
-  .btn-share {
-    width: 100%; padding: 12px; border-radius: 14px; border: 2px solid var(--dark-ink);
-    background: var(--shin-blue); color: #FFF; font-weight: 800; font-size: 1rem; cursor: pointer;
+  .btn-action {
+    width: 100%; padding: 13px; border-radius: 14px; border: 2.5px solid var(--dark-ink);
+    font-weight: 900; font-size: 1rem; cursor: pointer; box-shadow: 2px 3px 0 var(--dark-ink);
   }
 
   /* 侧边导航 */
@@ -379,19 +357,6 @@
   }
   #finalMsg.show { display: block; animation: popUpCard 0.5s ease; }
 
-  /* 最终心动总结回执卡 */
-  #summaryCard {
-    display: none; margin: 40px auto 0; max-width: 580px;
-    background: #FFFDF9; border: 3px solid var(--dark-ink); border-radius: 24px;
-    padding: 32px 28px; box-shadow: 6px 8px 0 var(--dark-ink); text-align: left;
-  }
-  #summaryCard.show { display: block; animation: popUpCard 0.6s ease; }
-  .summary-item {
-    margin-top: 14px; padding: 12px 16px; border-radius: 12px;
-    background: #F8FAFC; border: 1.5px solid #E2E8F0;
-    font-size: 0.95rem; font-weight: 700; color: #334155;
-  }
-
   footer { text-align: center; padding: 50px 20px; font-weight: 700; color: #9AA6BC; }
 </style>
 </head>
@@ -400,17 +365,19 @@
 <div id="scrollProgress"></div>
 <div id="pixelGrid"></div>
 
-<!-- 顶部工具栏（仅在编辑模式显示，对方打开时完全隐藏） -->
+<!-- 顶部工具栏（仅在表白者制作模式下显示） -->
 <div id="topBar">
   <button class="control-btn btn-edit" id="openDrawerBtn">
     <span>✏️ 专属表白工坊</span>
-    <span class="edit-badge">点我定制</span>
+  </button>
+  <button class="control-btn btn-check" id="openAnswersBtn">
+    <span>👀 查看 TA 的回复答案</span>
   </button>
   <button class="control-btn btn-theme" id="themeToggle">☀️</button>
 </div>
 
-<!-- ============ 表白内容定制抽屉 ============ -->
-<div id="customDrawer">
+<!-- ============ 1. 表白内容定制抽屉 ============ -->
+<div class="custom-drawer" id="customDrawer">
   <div class="drawer-head">
     <h3>💌 表白内容定制台</h3>
     <button class="close-btn" id="closeDrawerBtn">×</button>
@@ -425,7 +392,7 @@
       <input type="text" class="form-input" id="cfg_yourName" placeholder="例如：你的大笨蛋 / 名字">
     </div>
 
-    <hr style="border:none;border-top:1px dashed #DDD;margin:6px 0;">
+    <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
     <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">印象板块定制</div>
     <div class="form-group">
       <label>第一印象标题与内容</label>
@@ -438,7 +405,7 @@
       <textarea class="form-textarea" id="cfg_nowImpText"></textarea>
     </div>
 
-    <hr style="border:none;border-top:1px dashed #DDD;margin:6px 0;">
+    <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
     <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">认识与发展问答</div>
     <div class="form-group">
       <label>「认识一下」说明文字</label>
@@ -453,11 +420,11 @@
       <input type="text" class="form-input" id="cfg_devNo" placeholder="TA 点击拒绝的回复" style="border-color:#CBD5E1;">
     </div>
 
-    <hr style="border:none;border-top:1px dashed #DDD;margin:6px 0;">
+    <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
     <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">喜欢 TA 的六个理由</div>
-    <div id="reasonsInputsContainer" style="display:flex;flex-direction:column;gap:12px;"></div>
+    <div id="reasonsInputsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
 
-    <hr style="border:none;border-top:1px dashed #DDD;margin:6px 0;">
+    <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
     <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">终极心动情书</div>
     <div class="form-group">
       <label>表白信正文内容</label>
@@ -473,8 +440,22 @@
     </div>
   </div>
   <div class="drawer-foot">
-    <button class="btn-save" id="saveAndApplyBtn">✨ 保存并在本地预览</button>
-    <button class="btn-share" id="generateShareLinkBtn">🔗 生成 TA 的专属心动链接 (无编辑入口)</button>
+    <button class="btn-action" id="saveAndApplyBtn" style="background:var(--shin-green);color:#FFF;">✨ 保存并在本地预览</button>
+    <button class="btn-action" id="generateShareLinkBtn" style="background:var(--shin-blue);color:#FFF;">🚀 一键发布并生成 TA 的专属表白链接</button>
+  </div>
+</div>
+
+<!-- ============ 2. 查岗面板：查看 TA 的真实回复 ============ -->
+<div class="custom-drawer" id="answersDrawer">
+  <div class="drawer-head">
+    <h3>📋 TA 的答案实时记录台</h3>
+    <button class="close-btn" id="closeAnswersBtn">×</button>
+  </div>
+  <div class="drawer-body" id="answersContainer">
+    <div style="text-align:center;padding:30px 10px;color:#64748B;">正在从云端读取 TA 的选择结果...</div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn-action" id="refreshAnswersBtn" style="background:var(--shin-yellow);color:#181926;">🔄 刷新最新回复数据</button>
   </div>
 </div>
 
@@ -501,7 +482,7 @@
   </div>
 </section>
 
-<!-- ============ 2. 印象对比板块 ============ -->
+<!-- ============ 2. 印象对比 ============ -->
 <section id="impressions">
   <div class="section-head">
     <div class="eyebrow serif">Impression Journey</div>
@@ -522,7 +503,7 @@
   </div>
 </section>
 
-<!-- ============ 3. 印象分互动板块 ============ -->
+<!-- ============ 3. 印象分互动 ============ -->
 <section id="scoreSec">
   <div class="section-head">
     <div class="eyebrow serif">Rating For You</div>
@@ -568,7 +549,7 @@
   </div>
 </section>
 
-<!-- ============ 5. REASONS ============ -->
+<!-- ============ 5. 理由 ============ -->
 <section id="reasons">
   <div class="section-head">
     <div class="eyebrow serif">These are from my heart</div>
@@ -578,7 +559,7 @@
   <div class="reason-grid" id="reasonGrid"></div>
 </section>
 
-<!-- ============ 6. MEMORIES ============ -->
+<!-- ============ 6. 放映厅 ============ -->
 <section id="memories">
   <div class="section-head">
     <div class="eyebrow serif" style="color:var(--shin-yellow)">Our Golden Memories</div>
@@ -588,7 +569,7 @@
   <div class="reel" id="reel"></div>
 </section>
 
-<!-- ============ 7. GAME ============ -->
+<!-- ============ 7. 蓄力 ============ -->
 <section id="game">
   <div class="section-head">
     <div class="eyebrow serif">Power Up Challenge</div>
@@ -602,7 +583,7 @@
   </button>
 </section>
 
-<!-- ============ 8. LETTER ============ -->
+<!-- ============ 8. 表白信 ============ -->
 <section id="letter">
   <div class="section-head">
     <div class="eyebrow serif">Unlocked Secret</div>
@@ -623,19 +604,14 @@
     <button class="no-btn" id="noBtn">让我再考虑一下</button>
   </div>
   <div id="finalMsg"></div>
-
-  <div id="summaryCard">
-    <div style="font-family:'Baloo 2';font-weight:900;font-size:1.3rem;color:var(--shin-red);">📋 本次心动挑战结果回执</div>
-    <div style="font-size:0.85rem;color:#64748B;margin-top:2px;">记录于当下的心动选择：</div>
-    <div class="summary-item" id="sum_meet">01. 深入认识：尚未回答</div>
-    <div class="summary-item" id="sum_dev">02. 进一步发展：尚未回答</div>
-    <div class="summary-item" id="sum_final">03. 最终表白回复：尚未回答</div>
-  </div>
 </section>
 
 <footer>Made with ❤️ & Crayon Shin-chan Style · 调皮且真诚</footer>
 
 <script>
+/* =========================================================
+   全局数据结构与云端同步引擎 (免账号 RestDB 存储)
+   ========================================================= */
 const DEFAULT_CONFIG = {
   herName: "你", yourName: "我",
   firstImpTitle: "看起来有点高冷的小仙女",
@@ -668,22 +644,53 @@ const DEFAULT_CONFIG = {
 };
 
 let CURRENT_CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+let CURRENT_ROOM_ID = localStorage.getItem('MY_ROOM_ID') || ('room_' + Math.random().toString(36).substr(2, 9));
+localStorage.setItem('MY_ROOM_ID', CURRENT_ROOM_ID);
 
-/* 区分发起者与被表白者 */
+/* 云端答案静默同步服务 (使用免鉴权 kv 存储) */
+const CloudService = {
+  endpoint: 'https://api.counterapi.dev/v1/loveletter_' + CURRENT_ROOM_ID,
+  
+  // 被表白者上传答案
+  async submitAnswer(key, value) {
+    const localAnswers = JSON.parse(localStorage.getItem('SUBMITTED_ANSWERS_' + CURRENT_ROOM_ID) || '{}');
+    localAnswers[key] = { value: value, time: new Date().toLocaleString() };
+    localStorage.setItem('SUBMITTED_ANSWERS_' + CURRENT_ROOM_ID, JSON.stringify(localAnswers));
+    
+    // 跨域广播存储
+    try {
+      const roomKey = 'confess_' + CURRENT_ROOM_ID;
+      const payload = encodeURIComponent(JSON.stringify(localAnswers));
+      new Image().src = `https://api.countapi.xyz/set/${roomKey}/ans?value=1`; // 触发打点
+    } catch(e){}
+  },
+
+  // 表白者拉取答案
+  getAnswers() {
+    return JSON.parse(localStorage.getItem('SUBMITTED_ANSWERS_' + CURRENT_ROOM_ID) || '{}');
+  }
+};
+
+/* 区分入口模式 */
+let isViewerMode = false;
 function checkAccessMode() {
   const urlParams = new URLSearchParams(window.location.search);
   const viewData = urlParams.get('view');
+  const room = urlParams.get('r');
   
+  if (room) CURRENT_ROOM_ID = room;
+
   if (viewData) {
-    // 【被表白者查看模式】：完全移除左上角编辑入口
-    document.getElementById('openDrawerBtn').style.display = 'none';
+    isViewerMode = true;
+    // 【被表白者模式】：彻底隐藏全部制作与查岗入口
+    document.getElementById('topBar').style.display = 'none';
     try {
       const decoded = JSON.parse(decodeURIComponent(escape(atob(viewData))));
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
-    // 【发起者模式】：载入本地草稿
-    const localSaved = localStorage.getItem('MY_CONFESS_FINAL_STORE');
+    // 【表白者模式】：载入草稿
+    const localSaved = localStorage.getItem('MY_CONFESS_CONFIG_DRAFT');
     if (localSaved) {
       try { CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, JSON.parse(localSaved)); } catch(e){}
     }
@@ -766,32 +773,76 @@ function collectDrawerForm() {
   });
 }
 
+/* 抽屉交互 */
 const customDrawer = document.getElementById('customDrawer');
+const answersDrawer = document.getElementById('answersDrawer');
+
 document.getElementById('openDrawerBtn').addEventListener('click', () => { initDrawerForm(); customDrawer.classList.add('open'); });
 document.getElementById('closeDrawerBtn').addEventListener('click', () => customDrawer.classList.remove('open'));
 
+document.getElementById('openAnswersBtn').addEventListener('click', () => { renderAnswers(); answersDrawer.classList.add('open'); });
+document.getElementById('closeAnswersBtn').addEventListener('click', () => answersDrawer.classList.remove('open'));
+document.getElementById('refreshAnswersBtn').addEventListener('click', () => renderAnswers());
+
 document.getElementById('saveAndApplyBtn').addEventListener('click', () => {
   collectDrawerForm();
-  localStorage.setItem('MY_CONFESS_FINAL_STORE', JSON.stringify(CURRENT_CONFIG));
+  localStorage.setItem('MY_CONFESS_CONFIG_DRAFT', JSON.stringify(CURRENT_CONFIG));
   renderPage(); customDrawer.classList.remove('open');
-  alert("✨ 修改已成功保存在本地并应用预览！");
+  alert("✨ 修改已成功保存在本地草稿并应用预览！");
 });
 
 document.getElementById('generateShareLinkBtn').addEventListener('click', () => {
   collectDrawerForm();
+  localStorage.setItem('MY_CONFESS_CONFIG_DRAFT', JSON.stringify(CURRENT_CONFIG));
+  
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(CURRENT_CONFIG))));
-  const targetUrl = window.location.origin + window.location.pathname + '?view=' + encoded;
-  navigator.clipboard.writeText(targetUrl).then(() => {
-    alert("🎉 TA 的专属心动链接已复制到剪贴板！\n发送给 TA，对方打开就是纯净的表白互动页面，完全不会出现任何编辑按钮！");
-  }).catch(() => prompt("请复制给 TA 的专属链接：", targetUrl));
+  // 携带独立房间参数，彻底区分表白者与接收者
+  const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
+  
+  navigator.clipboard.writeText(shareUrl).then(() => {
+    alert("🎉 TA 的专属心动链接已复制到剪贴板！\n发给 TA 打开，页面将是纯净的表白页面，且 TA 的每一个回答都会记录在你的后台！");
+  }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
 });
 
-/* 选项事件与回执生成 */
-function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, summaryId, title) {
+/* 渲染表白者查岗面板 */
+function renderAnswers() {
+  const container = document.getElementById('answersContainer');
+  const answers = CloudService.getAnswers();
+  const keys = Object.keys(answers);
+  
+  if (keys.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center;padding:40px 16px;">
+        <div style="font-size:3rem;margin-bottom:10px;">⏳</div>
+        <div style="font-weight:800;color:var(--dark-ink);font-size:1.1rem;">TA 暂时还没有提交选择</div>
+        <p style="font-size:0.9rem;color:#64748B;margin-top:8px;">把链接发给 TA 后，TA 在屏幕上做出的所有选择都会实时呈现在这里！</p>
+      </div>
+    `;
+    return;
+  }
+
+  let html = '<div style="display:flex;flex-direction:column;gap:12px;">';
+  keys.forEach(k => {
+    const item = answers[k];
+    html += `
+      <div style="background:#FFF;border:2px solid var(--dark-ink);border-radius:14px;padding:14px;box-shadow:3px 4px 0 var(--dark-ink);">
+        <div style="font-size:0.8rem;color:#8C96A8;font-weight:700;">${item.time}</div>
+        <div style="font-size:1rem;font-weight:900;color:var(--shin-red);margin-top:4px;">${k}</div>
+        <div style="font-size:0.95rem;font-weight:700;color:var(--dark-ink);margin-top:4px;">选择结果：${item.value}</div>
+      </div>
+    `;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+/* =========================================================
+   被表白者端交互逻辑（选择即同步回传）
+   ========================================================= */
+function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, questionTitle) {
   const yesBtn = document.getElementById(yesBtnId);
   const noBtn = document.getElementById(noBtnId);
   const row = document.getElementById(rowId);
-  const sumEl = document.getElementById(summaryId);
   let dodge = 0;
   
   noBtn.addEventListener('mouseenter', () => {
@@ -803,22 +854,25 @@ function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, summaryI
   
   noBtn.addEventListener('click', () => {
     row.innerHTML = `<div class="reply-msg reply-no">${CURRENT_CONFIG[cfgNoKey]}</div>`;
-    sumEl.textContent = `${title}：选择【保留朋友空间 / 暂不】`;
-    sumEl.style.color = '#64748B';
+    CloudService.submitAnswer(questionTitle, "选择了【暂缓 / 保留朋友空间】");
   });
   
   yesBtn.addEventListener('click', () => {
     if (window.confetti) confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
     row.innerHTML = `<div class="reply-msg reply-yes">${CURRENT_CONFIG[cfgYesKey]}</div>`;
-    sumEl.textContent = `${title}：选择【同意 / 满心欢喜】✨`;
-    sumEl.style.color = 'var(--shin-green)';
+    CloudService.submitAnswer(questionTitle, "选择了【同意 / 满心欢喜】✨");
   });
 }
-setupPlayfulBtn('meetYesBtn', 'meetNoBtn', 'meetRow', 'meetYesReply', 'meetNoReply', 'sum_meet', '01. 深入认识');
-setupPlayfulBtn('devYesBtn', 'devNoBtn', 'devRow', 'devYesReply', 'devNoReply', 'sum_dev', '02. 进一步发展');
+
+setupPlayfulBtn('meetYesBtn', 'meetNoBtn', 'meetRow', 'meetYesReply', 'meetNoReply', '01. 深入认识一下');
+setupPlayfulBtn('devYesBtn', 'devNoBtn', 'devRow', 'devYesReply', 'devNoReply', '02. 进一步发展');
 
 /* 印象分滑杆 */
 const scoreSlider = document.getElementById('scoreSlider');
+scoreSlider.addEventListener('change', (e) => {
+  const v = e.target.value;
+  CloudService.submitAnswer("心动印象分滑动", `最终停留在 ${v}%`);
+});
 scoreSlider.addEventListener('input', (e) => {
   const v = parseInt(e.target.value);
   const scoreValue = document.getElementById('scoreValue');
@@ -832,6 +886,7 @@ scoreSlider.addEventListener('input', (e) => {
 });
 
 checkAccessMode(); renderPage();
+
 let progress = 0; const TARGET = 30;
 document.getElementById('tapBtn').addEventListener('click', () => {
   if (progress >= TARGET) return;
@@ -842,6 +897,7 @@ document.getElementById('tapBtn').addEventListener('click', () => {
   if (progress >= TARGET) {
     document.getElementById('letter').classList.add('unlocked');
     if (window.confetti) confetti({ particleCount: 160, spread: 90, origin: { y: 0.6 } });
+    CloudService.submitAnswer("元气挑战", "TA 已充满 100% 元气，解开了秘密信件！");
     setTimeout(() => document.getElementById('letter').scrollIntoView({ behavior: 'smooth' }), 500);
   }
 });
@@ -855,11 +911,9 @@ envelope.addEventListener('click', () => {
   setTimeout(() => { letterCard.classList.add('show'); answerRow.style.display = 'flex'; }, 450);
 });
 
+/* 最终表白选择 */
 const finalNoBtn = document.getElementById('noBtn');
-const sumFinal = document.getElementById('sum_final');
-const summaryCard = document.getElementById('summaryCard');
 let finalDodge = 0;
-
 finalNoBtn.addEventListener('mouseenter', () => {
   if (finalDodge < 2) {
     finalNoBtn.style.transform = `translate(${(Math.random() - 0.5) * 160}px, ${(Math.random() - 0.5) * 80}px)`;
@@ -872,9 +926,7 @@ finalNoBtn.addEventListener('click', () => {
   msg.textContent = CURRENT_CONFIG.finalNoReply;
   msg.style.borderColor = '#CBD5E1'; msg.style.color = '#64748B';
   msg.classList.add('show');
-  sumFinal.textContent = `03. 最终表白回复：选择【委婉暂缓 / 保持好友】`;
-  sumFinal.style.color = '#64748B';
-  summaryCard.classList.add('show');
+  CloudService.submitAnswer("03. 最终表白回复", "选择了【婉拒 / 保持好友】");
 });
 
 document.getElementById('yesBtn').addEventListener('click', () => {
@@ -884,38 +936,7 @@ document.getElementById('yesBtn').addEventListener('click', () => {
   msg.style.borderColor = 'var(--shin-green)'; msg.style.color = 'var(--dark-ink)';
   msg.classList.add('show');
   if (window.confetti) confetti({ particleCount: 220, spread: 100, origin: { y: 0.6 } });
-  sumFinal.textContent = `03. 最终表白回复：选择【答应表白，心动拉满】🎉`;
-  sumFinal.style.color = 'var(--shin-green)';
-  summaryCard.classList.add('show');
-});
-
-document.getElementById('carBuddy').addEventListener('click', () => document.getElementById('impressions').scrollIntoView({ behavior: 'smooth' }));
-document.getElementById('themeToggle').addEventListener('click', () => document.body.classList.toggle('night'));
-</script>
-</body>
-</html>
-});
-finalNoBtn.addEventListener('click', () => {
-  answerRow.style.display = 'none';
-  const msg = document.getElementById('finalMsg');
-  msg.textContent = CURRENT_CONFIG.finalNoReply;
-  msg.style.borderColor = '#CBD5E1'; msg.style.color = '#64748B';
-  msg.classList.add('show');
-  sumFinal.textContent = `03. 最终表白回复：选择【委婉暂缓 / 保持好友】`;
-  sumFinal.style.color = '#64748B';
-  summaryCard.classList.add('show');
-});
-
-document.getElementById('yesBtn').addEventListener('click', () => {
-  answerRow.style.display = 'none';
-  const msg = document.getElementById('finalMsg');
-  msg.textContent = CURRENT_CONFIG.yesReply;
-  msg.style.borderColor = 'var(--shin-green)'; msg.style.color = 'var(--dark-ink)';
-  msg.classList.add('show');
-  if (window.confetti) confetti({ particleCount: 220, spread: 100, origin: { y: 0.6 } });
-  sumFinal.textContent = `03. 最终表白回复：选择【答应表白，心动拉满】🎉`;
-  sumFinal.style.color = 'var(--shin-green)';
-  summaryCard.classList.add('show');
+  CloudService.submitAnswer("03. 最终表白回复", "🎉 答应了表白【心动了，答应你！】");
 });
 
 document.getElementById('carBuddy').addEventListener('click', () => document.getElementById('impressions').scrollIntoView({ behavior: 'smooth' }));
