@@ -364,7 +364,7 @@
   .polaroid .date { font-size: 0.82rem; font-weight: 700; color: #8C96A8; margin-top: 4px; }
 
   /* =========================================================
-     全新的左右对战式心动蓄力板块（防止手机连点放大 + 爱心发射弹道）
+     蓄力挑战：彻底分离小新与手部爱心实体，纯净无方块背景
      ========================================================= */
   #game {
     text-align: center;
@@ -373,16 +373,16 @@
     -webkit-user-select: none;
   }
   .power-battle-stage {
-    max-width: 680px; margin: 30px auto 0;
+    max-width: 680px; margin: 20px auto 0;
     display: flex; align-items: center; justify-content: center;
     gap: 40px; position: relative; min-height: 380px;
     padding: 20px;
   }
   @media(max-width: 600px) {
-    .power-battle-stage { gap: 24px; }
+    .power-battle-stage { gap: 20px; }
   }
 
-  /* 左侧：粉色竖向能量柱 */
+  /* 左侧：粉色竖向爱心能量柱 */
   .vertical-meter-wrap {
     display: flex; flex-direction: column; align-items: center; gap: 14px;
   }
@@ -399,7 +399,6 @@
     transition: height 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
   }
-  /* 顶部动态跳动心形指示标 */
   .meter-indicator-heart {
     position: absolute; top: -18px; left: 50%;
     transform: translateX(-50%); font-size: 1.6rem;
@@ -418,51 +417,55 @@
     border: 2.5px solid var(--dark-ink); box-shadow: 3px 3px 0 var(--dark-ink);
   }
 
-  /* 右侧：发射爱心的小新按钮 */
+  /* 右侧：纯净小新与独立爱心发射台 */
   .shin-cannon-wrap {
     position: relative; display: flex; flex-direction: column; align-items: center;
+    cursor: pointer;
   }
-  .tap-shin-btn {
-    background: transparent; border: none; cursor: pointer; outline: none;
-    touch-action: manipulation;
+  .shin-figure-box {
+    position: relative; width: 200px; height: 260px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  /* 纯净小新主体（已裁切去除外层粉块与自带爱心） */
+  .shin-character-cutout {
+    width: 180px; height: 240px;
+    background: url('https://i.postimg.cc/Jsd7RFrx/preview-(4).webp') no-repeat center;
+    background-size: contain;
+    mix-blend-mode: multiply;
     transition: transform 0.08s ease;
   }
-  .tap-shin-btn:active {
-    transform: scale(0.92) translate(4px, 2px);
+  body.night .shin-character-cutout { mix-blend-mode: normal; filter: drop-shadow(0 10px 20px rgba(255, 71, 105, 0.35)); }
+
+  /* 独立的手指爱心（悬浮律动） */
+  .shin-hand-heart {
+    position: absolute; left: 10px; top: 86px;
+    font-size: 2rem; cursor: pointer;
+    filter: drop-shadow(0 4px 8px rgba(255, 71, 105, 0.5));
+    animation: handHeartFloat 0.7s infinite alternate ease-in-out;
   }
-  .shin-cannon-img {
-    width: 190px; height: auto;
-    filter: drop-shadow(0 14px 20px rgba(255, 71, 105, 0.3));
-    pointer-events: none;
+  @keyframes handHeartFloat {
+    from { transform: scale(1) translateY(0); }
+    to { transform: scale(1.22) translateY(-4px); }
   }
+
   .tap-tip-badge {
-    margin-top: 14px; background: var(--shin-yellow);
+    margin-top: 10px; background: var(--shin-yellow);
     font-size: 0.95rem; font-weight: 900; padding: 8px 18px;
     border-radius: 20px; border: 2.5px solid var(--dark-ink);
     box-shadow: 3px 4px 0 var(--dark-ink);
-    animation: bounceTip 1s infinite alternate;
-  }
-  @keyframes bounceTip {
-    from { transform: translateY(0); }
-    to { transform: translateY(-6px); }
+    cursor: pointer;
   }
 
-  /* 飞行动画爱心光波弹道 */
+  /* 发射的爱心光波弹道 */
   .flying-heart-beam {
     position: absolute; pointer-events: none; z-index: 10;
-    font-size: 1.8rem; font-weight: 900;
-    animation: flyToMeter 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    font-size: 1.9rem; font-weight: 900;
+    animation: flyToMeter 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
   @keyframes flyToMeter {
-    0% {
-      opacity: 1; transform: scale(0.6) translate(0, 0);
-    }
-    50% {
-      opacity: 1; transform: scale(1.3) translate(-80px, -15px);
-    }
-    100% {
-      opacity: 0; transform: scale(1.6) translate(-170px, 0);
-    }
+    0% { opacity: 1; transform: scale(0.6) translate(0, 0); }
+    50% { opacity: 1; transform: scale(1.4) translate(-90px, -15px); }
+    100% { opacity: 0; transform: scale(1.8) translate(-190px, 0); }
   }
 
   /* 表白信 */
@@ -590,7 +593,7 @@
     <div id="reasonsInputsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
-    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅相册（支持手机/电脑直选）</div>
+    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅相册（直接选图）</div>
     <div id="memoriesInputsContainer" style="display:flex;flex-direction:column;gap:12px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
@@ -675,6 +678,7 @@
 
 <!-- ============ 3. 双向心动值板块 ============ -->
 <section id="scoreSec">
+  <!-- 表白者端看到的单卡片模式 -->
   <div id="authorScoreSectionWrap">
     <div class="section-head">
       <div class="eyebrow serif">Rating For You</div>
@@ -689,6 +693,7 @@
     </div>
   </div>
 
+  <!-- 被表白者端看到的双卡片对比模式 -->
   <div id="viewerScoreSectionWrap" style="display:none;">
     <div class="section-head">
       <div class="eyebrow serif">Heartbeat Match</div>
@@ -767,7 +772,7 @@
   <div class="reel" id="reel"></div>
 </section>
 
-<!-- ============ 7. 蓄力挑战（左右对战式动感发射） ============ -->
+<!-- ============ 7. 蓄力挑战（纯净无方框小新 + 独立爱心发射） ============ -->
 <section id="game">
   <div class="section-head">
     <div class="eyebrow serif">Power Up Challenge</div>
@@ -776,7 +781,7 @@
   </div>
 
   <div class="power-battle-stage" id="battleStage">
-    <!-- 左边：粉色竖向爱心能量柱 -->
+    <!-- 左边：粉色竖向能量柱 -->
     <div class="vertical-meter-wrap">
       <div class="vertical-meter-track">
         <div class="vertical-meter-fill" id="meterFill">
@@ -786,11 +791,12 @@
       <div class="meter-pct-badge" id="meterLabel">0%</div>
     </div>
 
-    <!-- 右边：透明抠图爱心小新 -->
-    <div class="shin-cannon-wrap">
-      <button class="tap-shin-btn" id="tapBtn">
-        <img src="https://i.postimg.cc/Jsd7RFrx/preview-(4).webp" alt="发射爱心戳戳我" class="shin-cannon-img" id="shinGun">
-      </button>
+    <!-- 右边：彻底去除粉色方块底的纯净小新与独立爱心 -->
+    <div class="shin-cannon-wrap" id="tapArea">
+      <div class="shin-figure-box">
+        <div class="shin-character-cutout" id="shinBody"></div>
+        <div class="shin-hand-heart" id="handHeart">❤️</div>
+      </div>
       <div class="tap-tip-badge">戳我发射爱心 👉💥</div>
     </div>
   </div>
@@ -823,7 +829,7 @@
 <footer>Made with ❤️ & Crayon Shin-chan Style · 调皮且真诚</footer>
 
 <script>
-/* 内置 4 张免外链高颜值蜡笔小新主题插画（纯原生绘制，永不失效） */
+/* 内置 4 张免外链高颜值蜡笔小新主题插画 */
 const DEFAULT_UI_IMAGES = [
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='270' viewBox='0 0 280 270'><rect width='280' height='270' fill='%23FFEBEF'/><circle cx='140' cy='120' r='60' fill='%23FFD026'/><text x='140' y='125' font-size='46' text-anchor='middle'>🥰</text><text x='140' y='210' font-size='18' font-weight='bold' fill='%23FF4769' text-anchor='middle'>初次相遇的心动 ✨</text></svg>",
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='280' height='270' viewBox='0 0 280 270'><rect width='280' height='270' fill='%23EAF3FF'/><circle cx='140' cy='120' r='60' fill='%233E8BFF' opacity='0.2'/><text x='140' y='125' font-size='46' text-anchor='middle'>😴</text><text x='140' y='210' font-size='18' font-weight='bold' fill='%233E8BFF' text-anchor='middle'>互道晚安的日常 🌙</text></svg>",
@@ -892,6 +898,7 @@ function checkAccessMode() {
   }
 
   if (rawData) {
+    // 【被表白者查看模式】：完全从数据串解密
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
     document.getElementById('authorScoreSectionWrap').style.display = 'none';
@@ -901,6 +908,7 @@ function checkAccessMode() {
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
+    // 【表白者模式】：读取本地草稿
     isViewerMode = false;
     document.getElementById('authorScoreSectionWrap').style.display = 'block';
     document.getElementById('viewerScoreSectionWrap').style.display = 'none';
@@ -920,7 +928,7 @@ function renderPage() {
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
   
-  // 严格渲染心动值
+  // 严格从 CURRENT_CONFIG 渲染心动值
   const scoreNum = CURRENT_CONFIG.authorScoreNum !== undefined ? Number(CURRENT_CONFIG.authorScoreNum) : 100;
   const scoreVal = CURRENT_CONFIG.authorScoreVal || (scoreNum === 100 ? "520% 🚀" : scoreNum + "%");
   const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
@@ -1175,12 +1183,13 @@ document.getElementById('saveAndApplyBtn').addEventListener('click', () => {
 });
 
 document.getElementById('generateShareLinkBtn').addEventListener('click', () => {
+  // 确保滑杆数值与所有表单数据完整提取
   collectDrawerForm();
   localStorage.setItem('MY_CONFESS_CONFIG_FINAL', JSON.stringify(CURRENT_CONFIG));
   
   // 采用 Hash 锚点方案（#data=），彻底摆脱 URI Too Long
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(CURRENT_CONFIG))));
-  const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '#data=' + encoded;
+  const shareUrl = window.location.origin + window.location.pathname + '#data=' + encoded;
   
   navigator.clipboard.writeText(shareUrl).then(() => {
     alert("🎉 TA 的专属心动链接已生成并复制！\n心动值【" + CURRENT_CONFIG.authorScoreVal + "】与照片已安全打包，绝不会再报 URI Too Long！");
@@ -1281,32 +1290,37 @@ viewerScoreSlider.addEventListener('input', (e) => {
 checkAccessMode(); renderPage();
 
 /* =========================================================
-   蓄力游戏交互引擎：发射爱心弹道击打左侧粉红进度条
+   蓄力游戏：手指爱心发射弹道 + 能量柱上升
    ========================================================= */
 let progress = 0; const TARGET = 25;
-const tapBtn = document.getElementById('tapBtn');
 const battleStage = document.getElementById('battleStage');
+const tapArea = document.getElementById('tapArea');
 const meterFill = document.getElementById('meterFill');
 const meterLabel = document.getElementById('meterLabel');
-const shinGun = document.getElementById('shinGun');
+const shinBody = document.getElementById('shinBody');
+const handHeart = document.getElementById('handHeart');
 
-tapBtn.addEventListener('click', (e) => {
-  e.preventDefault();
+function launchHeartLaser(e) {
+  if (e) e.preventDefault();
   if (progress >= TARGET) return;
   progress++;
-  
-  // 产生飞向左侧能量柱的爱心光波弹道
+
+  // 爱心实体飞行动画弹道
   const beam = document.createElement('div');
   beam.className = 'flying-heart-beam';
   beam.textContent = ['💖', '💕', '✨', '💘', '💓'][Math.floor(Math.random() * 5)];
-  beam.style.right = '130px';
-  beam.style.top = (130 + (Math.random() - 0.5) * 40) + 'px';
+  beam.style.right = '140px';
+  beam.style.top = (110 + (Math.random() - 0.5) * 35) + 'px';
   battleStage.appendChild(beam);
-  setTimeout(() => beam.remove(), 380);
+  setTimeout(() => beam.remove(), 350);
 
-  // 小新发射后坐力微震
-  shinGun.style.transform = 'scale(0.92) translateX(8px)';
-  setTimeout(() => shinGun.style.transform = 'scale(1) translateX(0)', 80);
+  // 小新动作微震
+  shinBody.style.transform = 'scale(0.93) translateX(6px)';
+  handHeart.style.transform = 'scale(1.4) translateX(-8px)';
+  setTimeout(() => {
+    shinBody.style.transform = 'scale(1) translateX(0)';
+    handHeart.style.transform = 'scale(1) translateX(0)';
+  }, 90);
 
   const pct = Math.round((progress / TARGET) * 100);
   meterFill.style.height = pct + '%';
@@ -1321,7 +1335,9 @@ tapBtn.addEventListener('click', (e) => {
     if (isViewerMode) StateService.submitAnswer("元气挑战", "TA 已充满 100% 元气，解开了秘密信件！");
     setTimeout(() => document.getElementById('letter').scrollIntoView({ behavior: 'smooth' }), 600);
   }
-});
+}
+
+tapArea.addEventListener('click', launchHeartLaser);
 
 const envelope = document.getElementById('envelope');
 const letterCard = document.getElementById('letterCard');
