@@ -40,7 +40,7 @@
     transition: background 0.4s ease, color 0.4s ease;
   }
 
-  /* 白天模式背景层：柔和低饱和睡衣几何印花（不刺眼、不抢文字） */
+  /* 白天模式背景层：柔和低饱和睡衣几何印花 */
   #dayBg {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="220" viewBox="0 0 160 220"><g stroke="%232B2D42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.18"><circle cx="28" cy="40" r="14" fill="%232FC980"/><polygon points="120,18 138,48 102,48" fill="%23FF4769"/><rect x="68" y="90" width="26" height="26" rx="4" fill="%23FFD026" transform="rotate(18 81 103)"/><polygon points="38,150 54,180 22,180" fill="%23FF4769" transform="rotate(-15 38 165)"/><circle cx="126" cy="140" r="15" fill="%232FC980"/><rect x="18" y="200" width="24" height="24" rx="4" fill="%23FFD026" transform="rotate(40 30 212)"/><circle cx="85" cy="195" r="13" fill="%232FC980"/><polygon points="140,195 156,220 124,220" fill="%23FF4769"/></g></svg>');
@@ -49,12 +49,15 @@
     transition: opacity 0.5s ease;
   }
 
-  /* 夜间模式背景层：雪山星空沉浸式暗夜场景 */
+  /* 夜间模式背景层：小新牵小白雪山星空夜景全屏覆盖 */
   #nightBg {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     opacity: 0;
-    background: radial-gradient(circle at 50% 15%, #1D2545 0%, #090B15 100%),
-                radial-gradient(circle at 20% 80%, rgba(62,139,255,0.15) 0%, transparent 40%);
+    background-image: url('https://images.weserv.nl/?url=https://i.pinimg.com/736x/89/65/54/8965545a90d8be14d0ff9e037ef0cf43.jpg');
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     transition: opacity 0.5s ease;
   }
   body.night #dayBg { opacity: 0; }
@@ -139,10 +142,10 @@
   #progressNav {
     position: fixed; right: 24px; top: 50%;
     transform: translateY(-50%); display: flex; flex-direction: column; gap: 14px;
-    z-index: 100; background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px);
+    z-index: 100; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px);
     padding: 14px 8px; border-radius: 30px; border: 2px solid #181926; box-shadow: 2px 3px 0 var(--dark-ink);
   }
-  body.night #progressNav { background: rgba(26, 31, 53, 0.92); border-color: rgba(255,255,255,0.3); }
+  body.night #progressNav { background: rgba(26, 31, 53, 0.85); border-color: rgba(255,255,255,0.3); }
   #progressNav .dot {
     width: 9px; height: 9px; border-radius: 50%;
     background: rgba(24, 25, 38, 0.3); cursor: pointer; transition: all .35s;
@@ -186,7 +189,7 @@
     box-shadow: 3px 3px 0 var(--dark-ink);
   }
 
-  /* 印象对比卡片：提高不透明度，阻隔背景图案透光 */
+  /* 印象对比 */
   .compare-container {
     max-width: 960px; margin: 0 auto;
     display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 26px;
@@ -281,7 +284,7 @@
     border: 1px dashed var(--shin-purple);
   }
 
-  /* 理由卡片：采用高不透明度白底，字迹清晰 */
+  /* 理由卡片 */
   .reason-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
     gap: 26px; max-width: 1100px; margin: 0 auto;
@@ -469,6 +472,10 @@
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
     <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">喜欢 TA 的六个理由</div>
     <div id="reasonsInputsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
+
+    <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
+    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅照片与标题定制</div>
+    <div id="memoriesInputsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
     <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">终极心动情书</div>
@@ -711,10 +718,10 @@ const DEFAULT_CONFIG = {
     {title:"根本不需要理由", text:"其实喜欢你到最后，哪怕什么都不做，只要你在身边就觉得很安心、很开心。"}
   ],
   memories: [
-    {img: "https://i.postimg.cc/yDr67G1r/preview-(1).webp", cap: "第一次畅聊到深夜", date: "MEMORIES 01"},
-    {img: "https://i.postimg.cc/5Xk9fr43/preview-(5).webp", cap: "互道晚安的困困日常", date: "MEMORIES 02"},
-    {img: "https://i.postimg.cc/87nkTYpw/preview-(3).webp", cap: "一起分享美味小零食", date: "MEMORIES 03"},
-    {img: "https://i.postimg.cc/gxBcG7zq/preview-(6).webp", cap: "打打闹闹的搞笑时光", date: "MEMORIES 04"}
+    {img: "https://images.weserv.nl/?url=https://i.pinimg.com/736x/2b/86/e8/2b86e88939a3f2b186b515a81615f530.jpg", cap: "第一次畅聊到深夜", date: "MEMORIES 01"},
+    {img: "https://images.weserv.nl/?url=https://i.pinimg.com/736x/89/65/54/8965545a90d8be14d0ff9e037ef0cf43.jpg", cap: "互道晚安的困困日常", date: "MEMORIES 02"},
+    {img: "https://images.weserv.nl/?url=https://i.pinimg.com/736x/aa/5b/4b/aa5b4b1a8f9a2b5e5a2e5d9c7c2b3e4a.jpg", cap: "一起分享美味小零食", date: "MEMORIES 03"},
+    {img: "https://images.weserv.nl/?url=https://i.pinimg.com/736x/95/96/53/959653a9926d2e8b2ec62f1c84964cb7.jpg", cap: "打打闹闹的搞笑时光", date: "MEMORIES 04"}
   ],
   letterBody: "认识你之后，我的废话变多了，相册里全是你的表情，心里也总是塞满了奇奇怪怪又暖洋洋的小念头。我知道自己有时有点笨拙，但每一份心意都是真的：我喜欢你，想把以后的每一次日出、每一顿美食，和每一个搞怪日常都分享给你。",
   yesReply: "太棒啦！！🥳 动感光波发射成功！从今天起，你的搞怪与可爱就由我全权承包咯～✨",
@@ -744,6 +751,7 @@ function checkAccessMode() {
   if (room) CURRENT_ROOM_ID = room;
 
   if (viewData) {
+    // 【被表白者模式】：从 URL 解密数据，优先级最高
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
     document.getElementById('authorScoreSectionWrap').style.display = 'none';
@@ -753,6 +761,7 @@ function checkAccessMode() {
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
+    // 【表白者模式】：读取本地保存的草稿
     isViewerMode = false;
     document.getElementById('authorScoreSectionWrap').style.display = 'block';
     document.getElementById('viewerScoreSectionWrap').style.display = 'none';
@@ -772,6 +781,7 @@ function renderPage() {
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
   
+  // 严格根据 CURRENT_CONFIG 渲染心动值
   const scoreNum = CURRENT_CONFIG.authorScoreNum !== undefined ? CURRENT_CONFIG.authorScoreNum : 100;
   const scoreVal = CURRENT_CONFIG.authorScoreVal || (scoreNum === 100 ? "520% 🚀" : scoreNum + "%");
   const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
@@ -883,6 +893,7 @@ function initDrawerForm() {
   setVal('cfg_developText', c.developText); setVal('cfg_devYes', c.devYesReply); setVal('cfg_devNo', c.devNoReply);
   setVal('cfg_letterBody', c.letterBody); setVal('cfg_yesReply', c.yesReply); setVal('cfg_finalNoReply', c.finalNoReply);
 
+  // 理由输入框
   const container = document.getElementById('reasonsInputsContainer');
   container.innerHTML = '';
   c.reasons.forEach((r, idx) => {
@@ -890,6 +901,20 @@ function initDrawerForm() {
     box.style.cssText = 'background:#F0ECE1;padding:10px;border-radius:10px;display:flex;flex-direction:column;gap:6px;';
     box.innerHTML = `<span style="font-size:0.8rem;font-weight:800;color:var(--shin-purple);">理由 ${idx+1}</span><input type="text" class="form-input r-title" value="${r.title}"><textarea class="form-textarea r-text" style="min-height:40px;">${r.text}</textarea>`;
     container.appendChild(box);
+  });
+
+  // 放映厅照片与标题输入框
+  const memContainer = document.getElementById('memoriesInputsContainer');
+  memContainer.innerHTML = '';
+  c.memories.forEach((m, idx) => {
+    const box = document.createElement('div');
+    box.style.cssText = 'background:#E8F0FE;padding:10px;border-radius:10px;display:flex;flex-direction:column;gap:6px;';
+    box.innerHTML = `
+      <span style="font-size:0.8rem;font-weight:800;color:var(--shin-blue);">拍立得照片 ${idx+1}</span>
+      <input type="text" class="form-input m-cap" placeholder="照片标题（如：第一次聊天）" value="${m.cap}">
+      <input type="text" class="form-input m-img" placeholder="图片直链 URL" value="${m.img}">
+    `;
+    memContainer.appendChild(box);
   });
 }
 
@@ -911,13 +936,26 @@ function collectDrawerForm() {
   CURRENT_CONFIG.yesReply = getVal('cfg_yesReply', "");
   CURRENT_CONFIG.finalNoReply = getVal('cfg_finalNoReply', "千万别有压力！继续做开心果！");
 
+  // 严格抓取当前滑杆实际数值
   const currentSliderVal = parseInt(document.getElementById('authorScoreSlider').value);
   updateAuthorScore(currentSliderVal);
 
+  // 收集理由
   const titles = document.querySelectorAll('.r-title');
   const texts = document.querySelectorAll('.r-text');
   titles.forEach((t, i) => {
     CURRENT_CONFIG.reasons[i] = { title: t.value.trim(), text: texts[i].value.trim() };
+  });
+
+  // 收集放映厅照片
+  const mcaps = document.querySelectorAll('.m-cap');
+  const mimgs = document.querySelectorAll('.m-img');
+  mcaps.forEach((c, i) => {
+    CURRENT_CONFIG.memories[i] = {
+      cap: c.value.trim() || `MEMORIES 0${i+1}`,
+      img: mimgs[i].value.trim() || CURRENT_CONFIG.memories[i].img,
+      date: `MEMORIES 0${i+1}`
+    };
   });
 }
 
@@ -958,7 +996,7 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
   const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
   
   navigator.clipboard.writeText(shareUrl).then(() => {
-    alert("🎉 TA 的专属心动链接已生成！\n你设定的心动值（" + CURRENT_CONFIG.authorScoreVal + "）已精准打包进专属链接中！");
+    alert("🎉 TA 的专属心动链接已生成！\n你设定的心动值与放映厅照片已精准打包进专属链接中！");
   }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
 });
 
