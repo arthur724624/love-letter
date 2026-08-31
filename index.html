@@ -49,16 +49,24 @@
     transition: opacity 0.5s ease;
   }
 
-  /* 夜间模式背景层：小新牵小白雪山星空夜景全屏覆盖 */
+  /* 夜间模式背景层：直接内置雪山星空插画矢量层，永不黑屏 */
   #nightBg {
     position: fixed; inset: 0; z-index: 0; pointer-events: none;
     opacity: 0;
-    background-image: url('https://images.weserv.nl/?url=https://i.pinimg.com/736x/89/65/54/8965545a90d8be14d0ff9e037ef0cf43.jpg');
-    background-size: cover;
-    background-position: center bottom;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
+    background: linear-gradient(180deg, #090B16 0%, #11172E 40%, #1E284A 70%, #151A2C 100%);
     transition: opacity 0.5s ease;
+  }
+  #nightBg::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                      radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                      radial-gradient(1px 1px at 90px 40px, #ddd, rgba(0,0,0,0)),
+                      radial-gradient(2px 2px at 160px 120px, #fff, rgba(0,0,0,0)),
+                      radial-gradient(3px 3px at 240px 60px, #FFD026, rgba(0,0,0,0)),
+                      radial-gradient(2px 2px at 300px 150px, #fff, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 340px 240px;
+    opacity: 0.6;
   }
   body.night #dayBg { opacity: 0; }
   body.night #nightBg { opacity: 1; }
@@ -127,6 +135,19 @@
     font-family: inherit; font-size: 0.95rem; outline: none;
   }
   .form-textarea { resize: vertical; min-height: 48px; }
+
+  .photo-upload-box {
+    background: #F8FAFC; border: 2px dashed #CBD5E1; border-radius: 14px;
+    padding: 12px; display: flex; flex-direction: column; gap: 8px;
+  }
+  .btn-upload-local {
+    padding: 8px 14px; border-radius: 10px; border: 1.5px solid var(--dark-ink);
+    background: #FFF; font-weight: 800; font-size: 0.85rem; cursor: pointer;
+    box-shadow: 2px 2px 0 var(--dark-ink); display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .upload-preview-thumb {
+    width: 60px; height: 60px; border-radius: 8px; object-fit: cover; border: 1.5px solid #CBD5E1; display: none;
+  }
   
   .drawer-foot {
     padding: 18px 24px; border-top: 2px solid #EAE6DF;
@@ -474,8 +495,8 @@
     <div id="reasonsInputsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
-    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅照片与标题定制</div>
-    <div id="memoriesInputsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">高光放映厅照片上传与标题定制</div>
+    <div id="memoriesInputsContainer" style="display:flex;flex-direction:column;gap:12px;"></div>
 
     <hr style="border:none;border-top:1px dashed #DDD;margin:4px 0;">
     <div style="font-weight:900;font-size:0.95rem;color:var(--dark-ink);">终极心动情书</div>
@@ -559,7 +580,6 @@
 
 <!-- ============ 3. 双向心动值板块 ============ -->
 <section id="scoreSec">
-  <!-- 表白者端看到的单卡片模式 -->
   <div id="authorScoreSectionWrap">
     <div class="section-head">
       <div class="eyebrow serif">Rating For You</div>
@@ -574,7 +594,6 @@
     </div>
   </div>
 
-  <!-- 被表白者端看到的双卡片对比模式 -->
   <div id="viewerScoreSectionWrap" style="display:none;">
     <div class="section-head">
       <div class="eyebrow serif">Heartbeat Match</div>
@@ -718,10 +737,10 @@ const DEFAULT_CONFIG = {
     {title:"根本不需要理由", text:"其实喜欢你到最后，哪怕什么都不做，只要你在身边就觉得很安心、很开心。"}
   ],
   memories: [
-    {img: "https://images.weserv.nl/?url=https://i.pinimg.com/736x/2b/86/e8/2b86e88939a3f2b186b515a81615f530.jpg", cap: "第一次畅聊到深夜", date: "MEMORIES 01"},
-    {img: "https://images.weserv.nl/?url=https://i.pinimg.com/736x/89/65/54/8965545a90d8be14d0ff9e037ef0cf43.jpg", cap: "互道晚安的困困日常", date: "MEMORIES 02"},
-    {img: "https://images.weserv.nl/?url=https://i.pinimg.com/736x/aa/5b/4b/aa5b4b1a8f9a2b5e5a2e5d9c7c2b3e4a.jpg", cap: "一起分享美味小零食", date: "MEMORIES 03"},
-    {img: "https://images.weserv.nl/?url=https://i.pinimg.com/736x/95/96/53/959653a9926d2e8b2ec62f1c84964cb7.jpg", cap: "打打闹闹的搞笑时光", date: "MEMORIES 04"}
+    {img: "https://i.postimg.cc/yDr67G1r/preview-(1).webp", cap: "第一次畅聊到深夜", date: "MEMORIES 01"},
+    {img: "https://i.postimg.cc/5Xk9fr43/preview-(5).webp", cap: "互道晚安的困困日常", date: "MEMORIES 02"},
+    {img: "https://i.postimg.cc/87nkTYpw/preview-(3).webp", cap: "一起分享美味小零食", date: "MEMORIES 03"},
+    {img: "https://i.postimg.cc/gxBcG7zq/preview-(6).webp", cap: "打打闹闹的搞笑时光", date: "MEMORIES 04"}
   ],
   letterBody: "认识你之后，我的废话变多了，相册里全是你的表情，心里也总是塞满了奇奇怪怪又暖洋洋的小念头。我知道自己有时有点笨拙，但每一份心意都是真的：我喜欢你，想把以后的每一次日出、每一顿美食，和每一个搞怪日常都分享给你。",
   yesReply: "太棒啦！！🥳 动感光波发射成功！从今天起，你的搞怪与可爱就由我全权承包咯～✨",
@@ -751,7 +770,6 @@ function checkAccessMode() {
   if (room) CURRENT_ROOM_ID = room;
 
   if (viewData) {
-    // 【被表白者模式】：从 URL 解密数据，优先级最高
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
     document.getElementById('authorScoreSectionWrap').style.display = 'none';
@@ -761,7 +779,6 @@ function checkAccessMode() {
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
-    // 【表白者模式】：读取本地保存的草稿
     isViewerMode = false;
     document.getElementById('authorScoreSectionWrap').style.display = 'block';
     document.getElementById('viewerScoreSectionWrap').style.display = 'none';
@@ -781,7 +798,6 @@ function renderPage() {
   document.getElementById('nowImpTitle').textContent = CURRENT_CONFIG.nowImpTitle;
   document.getElementById('nowImpText').textContent = CURRENT_CONFIG.nowImpText;
   
-  // 严格根据 CURRENT_CONFIG 渲染心动值
   const scoreNum = CURRENT_CONFIG.authorScoreNum !== undefined ? CURRENT_CONFIG.authorScoreNum : 100;
   const scoreVal = CURRENT_CONFIG.authorScoreVal || (scoreNum === 100 ? "520% 🚀" : scoreNum + "%");
   const scoreDesc = CURRENT_CONFIG.authorScoreDesc || "毫无疑问是满分心动！甚至爆表到了外太空～ 🚀";
@@ -883,6 +899,26 @@ function updateAuthorScore(v) {
 }
 authorScoreSlider.addEventListener('input', (e) => updateAuthorScore(parseInt(e.target.value)));
 
+/* 本地图片压缩为轻量 Base64 辅助函数 */
+function handleImageUpload(file, callback) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const maxW = 500;
+      let w = img.width, h = img.height;
+      if (w > maxW) { h = Math.round((h * maxW) / w); w = maxW; }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', 0.72));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
 function initDrawerForm() {
   const c = CURRENT_CONFIG;
   const setVal = (id, val) => document.getElementById(id).value = val;
@@ -903,17 +939,36 @@ function initDrawerForm() {
     container.appendChild(box);
   });
 
-  // 放映厅照片与标题输入框
+  // 放映厅：直接相册选图上传
   const memContainer = document.getElementById('memoriesInputsContainer');
   memContainer.innerHTML = '';
   c.memories.forEach((m, idx) => {
     const box = document.createElement('div');
-    box.style.cssText = 'background:#E8F0FE;padding:10px;border-radius:10px;display:flex;flex-direction:column;gap:6px;';
+    box.className = 'photo-upload-box';
     box.innerHTML = `
-      <span style="font-size:0.8rem;font-weight:800;color:var(--shin-blue);">拍立得照片 ${idx+1}</span>
+      <span style="font-size:0.85rem;font-weight:900;color:var(--shin-blue);">📸 拍立得照片 ${idx+1}</span>
       <input type="text" class="form-input m-cap" placeholder="照片标题（如：第一次聊天）" value="${m.cap}">
-      <input type="text" class="form-input m-img" placeholder="图片直链 URL" value="${m.img}">
+      <input type="hidden" class="m-img-data" value="${m.img}">
+      <div style="display:flex;align-items:center;gap:12px;margin-top:4px;">
+        <label class="btn-upload-local">
+          📁 从手机/电脑相册选图
+          <input type="file" accept="image/*" class="m-file-input" style="display:none;">
+        </label>
+        <img class="upload-preview-thumb" src="${m.img}" style="display:${m.img ? 'block' : 'none'};">
+      </div>
     `;
+    const fileInput = box.querySelector('.m-file-input');
+    const thumb = box.querySelector('.upload-preview-thumb');
+    const hiddenData = box.querySelector('.m-img-data');
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleImageUpload(e.target.files[0], (base64) => {
+          hiddenData.value = base64;
+          thumb.src = base64;
+          thumb.style.display = 'block';
+        });
+      }
+    });
     memContainer.appendChild(box);
   });
 }
@@ -949,11 +1004,11 @@ function collectDrawerForm() {
 
   // 收集放映厅照片
   const mcaps = document.querySelectorAll('.m-cap');
-  const mimgs = document.querySelectorAll('.m-img');
+  const mimgData = document.querySelectorAll('.m-img-data');
   mcaps.forEach((c, i) => {
     CURRENT_CONFIG.memories[i] = {
       cap: c.value.trim() || `MEMORIES 0${i+1}`,
-      img: mimgs[i].value.trim() || CURRENT_CONFIG.memories[i].img,
+      img: mimgData[i].value || CURRENT_CONFIG.memories[i].img,
       date: `MEMORIES 0${i+1}`
     };
   });
@@ -996,7 +1051,7 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
   const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
   
   navigator.clipboard.writeText(shareUrl).then(() => {
-    alert("🎉 TA 的专属心动链接已生成！\n你设定的心动值与放映厅照片已精准打包进专属链接中！");
+    alert("🎉 TA 的专属心动链接已生成！\n你设定的心动值与相册照片已精准打包进专属链接中！");
   }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
 });
 
