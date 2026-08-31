@@ -965,34 +965,18 @@ const StateService = {
 
 let isViewerMode = false;
 function checkAccessMode() {
-  let rawData = null;
-  const hash = window.location.hash;
-  if (hash && hash.includes('data=')) {
-    rawData = hash.split('data=')[1];
-  } else {
-    const urlParams = new URLSearchParams(window.location.search);
-    rawData = urlParams.get('view');
-  }
-
-  if (rawData) {
+  const urlParams = new URLSearchParams(window.location.search);
+  // 只要链接带 ?view=1 或者是对方打开，就进入受邀者模式
+  if (urlParams.get('view') === '1' || window.location.hash.includes('view')) {
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
     document.getElementById('authorScoreSectionWrap').style.display = 'none';
     document.getElementById('viewerScoreSectionWrap').style.display = 'block';
-    try {
-      const decoded = JSON.parse(atou(rawData));
-      CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
-    } catch(e) {
-      console.error("配置解析异常，已回退默认模板:", e);
-    }
   } else {
     isViewerMode = false;
+    document.getElementById('topBar').style.display = 'flex';
     document.getElementById('authorScoreSectionWrap').style.display = 'block';
     document.getElementById('viewerScoreSectionWrap').style.display = 'none';
-    const localSaved = localStorage.getItem('MY_CONFESS_CONFIG_FINAL');
-    if (localSaved) {
-      try { CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, JSON.parse(localSaved)); } catch(e){}
-    }
   }
 }
 
