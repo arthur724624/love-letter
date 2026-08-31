@@ -15,55 +15,44 @@
     --shin-blue: #3E8BFF;
     --shin-purple: #7C5CFC;
     --dark-ink: #181926;
-    --card-glass: rgba(255, 255, 255, 0.90);
+    --card-glass: rgba(255, 255, 255, 0.92);
     --border-glass: rgba(255, 255, 255, 0.95);
-    --page-bg: #FFFDF9;
     --ink-soft: #6C768A;
   }
 
   body.night {
-    --page-bg: #0F121F;
     --dark-ink: #F2F1F6;
     --ink-soft: #9AA6BC;
-    --card-glass: rgba(24, 28, 48, 0.88);
+    --card-glass: rgba(24, 28, 48, 0.90);
     --border-glass: rgba(255, 255, 255, 0.16);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
-  /* 基础背景图层：小新睡衣几何印花纹理 */
+  /* 核心背景：白天模式直接使用小新睡衣图案，夜间模式使用雪山星空大图 */
   body {
     font-family: 'Noto Sans SC', sans-serif;
     color: var(--dark-ink);
-    background-color: var(--page-bg);
     overflow-x: hidden;
     position: relative;
     min-height: 100vh;
-  }
-
-  /* 白天模式几何背景层 */
-  #bgPattern {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background-image: url('https://i.postimg.cc/k47vBf5n/pajama-pattern.png');
-    background-size: 260px;
+    background-color: #FFFFFF;
+    background-image: url('https://i.postimg.cc/T3VzYm4D/pajama-full.jpg');
+    background-size: 320px;
     background-repeat: repeat;
-    opacity: 0.22;
-    transition: opacity 0.6s ease;
+    background-attachment: fixed;
+    transition: background 0.5s ease, color 0.5s ease;
   }
 
-  /* 夜间模式星空大背景 */
-  #bgNightScene {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  body.night {
+    background-color: #0B0E1A;
     background-image: url('https://i.postimg.cc/85z1c0gT/shinchan-night-walk.jpg');
     background-size: cover;
     background-position: center bottom;
     background-repeat: no-repeat;
-    opacity: 0;
-    transition: opacity 0.7s ease;
+    background-attachment: fixed;
   }
-  body.night #bgPattern { opacity: 0.05; }
-  body.night #bgNightScene { opacity: 0.45; }
 
   h1, h2, h3, .fun-font { font-family: 'Baloo 2', 'Noto Sans SC', cursive; }
   .serif { font-family: 'Fraunces', serif; }
@@ -98,7 +87,7 @@
     justify-content: center; background: #FFF; font-size: 1.2rem;
   }
 
-  /* 抽屉面板（带像素风背景纹理） */
+  /* 抽屉面板（像素风背景） */
   .custom-drawer {
     position: fixed; top: 0; right: -500px; width: 100%; max-width: 480px; height: 100vh;
     background: #FFFDF9 url('https://i.postimg.cc/q737zS2r/pixel-pattern.jpg') repeat;
@@ -110,7 +99,7 @@
   .custom-drawer.open { right: 0; }
   .drawer-head {
     padding: 20px 24px; border-bottom: 2px solid #EAE6DF;
-    background: rgba(255, 253, 249, 0.95); backdrop-filter: blur(10px);
+    background: rgba(255, 253, 249, 0.96); backdrop-filter: blur(10px);
     display: flex; justify-content: space-between; align-items: center;
   }
   .drawer-head h3 { font-size: 1.25rem; color: var(--dark-ink); }
@@ -118,7 +107,7 @@
   
   .drawer-body {
     flex: 1; overflow-y: auto; padding: 24px;
-    background: rgba(255, 253, 249, 0.92); backdrop-filter: blur(6px);
+    background: rgba(255, 253, 249, 0.94); backdrop-filter: blur(6px);
     display: flex; flex-direction: column; gap: 16px;
   }
   .form-group { display: flex; flex-direction: column; gap: 6px; }
@@ -133,7 +122,7 @@
   
   .drawer-foot {
     padding: 18px 24px; border-top: 2px solid #EAE6DF;
-    background: rgba(250, 247, 242, 0.95); backdrop-filter: blur(10px);
+    background: rgba(250, 247, 242, 0.96); backdrop-filter: blur(10px);
     display: flex; flex-direction: column; gap: 10px;
   }
   .btn-action {
@@ -145,12 +134,12 @@
   #progressNav {
     position: fixed; right: 24px; top: 50%;
     transform: translateY(-50%); display: flex; flex-direction: column; gap: 14px;
-    z-index: 100; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px);
-    padding: 14px 8px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.8);
+    z-index: 100; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px);
+    padding: 14px 8px; border-radius: 30px; border: 1.5px solid #181926;
   }
   #progressNav .dot {
     width: 9px; height: 9px; border-radius: 50%;
-    background: rgba(24, 25, 38, 0.25); cursor: pointer; transition: all .35s;
+    background: rgba(24, 25, 38, 0.3); cursor: pointer; transition: all .35s;
   }
   #progressNav .dot.active { background: var(--shin-red); transform: scale(1.6); }
   @media(max-width:768px){ #progressNav { display: none; } }
@@ -161,22 +150,29 @@
   .section-head h2 { font-size: clamp(2rem, 4.4vw, 2.7rem); margin-top: 8px; }
   .section-head p { margin-top: 12px; color: #6C768A; font-size: 1.05rem; }
 
-  /* HERO */
+  /* HERO 区域：去掉了渐变色覆盖，保持背景图完整展示 */
   #hero {
     min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
     text-align: center;
+    background: transparent;
   }
   .tag-pill {
-    padding: 8px 22px; border-radius: 999px; background: rgba(255, 255, 255, 0.9);
-    border: 1.5px solid var(--shin-yellow); box-shadow: 0 8px 20px rgba(255, 208, 38, 0.25);
-    font-size: 0.95rem; font-weight: 800; color: #D48806; margin-bottom: 24px;
+    padding: 8px 22px; border-radius: 999px; background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--dark-ink); box-shadow: 3px 4px 0 var(--dark-ink);
+    font-size: 0.95rem; font-weight: 900; color: #181926; margin-bottom: 24px;
   }
-  #hero h1 { font-size: clamp(2.5rem, 6.5vw, 4.2rem); line-height: 1.25; font-weight: 900; }
+  #hero h1 { font-size: clamp(2.5rem, 6.5vw, 4.2rem); line-height: 1.25; font-weight: 900; text-shadow: 2px 2px 0 rgba(255,255,255,0.8); }
+  body.night #hero h1 { text-shadow: 2px 2px 0 rgba(0,0,0,0.8); }
   #hero h1 span.accent { color: var(--shin-red); position: relative; display: inline-block; }
-  #hero p.sub { margin-top: 20px; max-width: 540px; font-size: 1.15rem; color: #596173; line-height: 1.8; }
+  #hero p.sub {
+    margin-top: 20px; max-width: 540px; font-size: 1.15rem; font-weight: 700;
+    color: var(--dark-ink); line-height: 1.8;
+    background: rgba(255, 255, 255, 0.85); padding: 8px 16px; border-radius: 16px;
+  }
+  body.night #hero p.sub { background: rgba(24, 28, 48, 0.85); color: #F2F1F6; }
 
   .car-stage { position: relative; margin-top: 36px; cursor: pointer; }
-  .car-img { width: 190px; height: auto; filter: drop-shadow(0 14px 22px rgba(255, 71, 105, 0.18)); }
+  .car-img { width: 210px; height: auto; filter: drop-shadow(0 14px 22px rgba(255, 71, 105, 0.25)); }
   .click-badge {
     position: absolute; bottom: -8px; right: -8px;
     background: var(--shin-yellow); font-size: 0.85rem; font-weight: 900;
@@ -214,7 +210,7 @@
     padding: 34px 28px; box-shadow: 6px 8px 0 var(--dark-ink); text-align: center;
   }
   .score-author-box {
-    background: #FFFBF0; border-color: var(--shin-yellow);
+    background: #FFFDF5; border-color: var(--shin-yellow);
   }
   .score-display {
     font-size: 3rem; font-weight: 900; color: var(--shin-red);
@@ -300,13 +296,13 @@
   .reason-card .tap { font-size: 0.85rem; font-weight: 800; color: var(--shin-red); margin-top: auto; }
   .reason-card .face.back .tap { color: rgba(255,255,255,0.85); }
 
-  /* 放映厅（融入小新遛狗雪山夜景图） */
+  /* 放映厅（融入小新雪山夜景图） */
   #memories {
     position: relative;
-    background: linear-gradient(180deg, rgba(15, 18, 31, 0.85) 0%, rgba(15, 18, 31, 0.92) 100%),
+    background: linear-gradient(180deg, rgba(15, 18, 31, 0.82) 0%, rgba(15, 18, 31, 0.92) 100%),
                 url('https://i.postimg.cc/85z1c0gT/shinchan-night-walk.jpg') center/cover no-repeat;
     color: #FFF; border-radius: 46px; margin: 20px 16px; padding: 110px 24px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35); border: 3px solid var(--dark-ink);
   }
   #memories .section-head h2 { color: #FFF; }
   #memories .section-head p { color: #CBD5E1; }
@@ -318,7 +314,7 @@
     flex: 0 0 280px; background: #FFFDF9; border-radius: 18px;
     padding: 16px 16px 24px; color: #181926;
     box-shadow: 0 20px 40px rgba(0,0,0,0.5); scroll-snap-align: center;
-    transform: rotate(var(--r, 0deg)); transition: all 0.35s;
+    transform: rotate(var(--r, 0deg)); transition: all 0.35s; border: 2.5px solid #181926;
   }
   .polaroid:hover { transform: rotate(0deg) scale(1.08) translateY(-10px); }
   .polaroid .img-frame { width: 100%; height: 270px; border-radius: 12px; overflow: hidden; background: #EAEFF4; }
@@ -399,8 +395,6 @@
 </head>
 <body>
 
-<div id="bgPattern"></div>
-<div id="bgNightScene"></div>
 <div id="scrollProgress"></div>
 
 <!-- 顶部工具栏 -->
@@ -567,13 +561,11 @@
       <p>看看我对你的心动，也留下你给我的评分吧 📈</p>
     </div>
     <div class="score-dual-container">
-      <!-- 上卡片：严格读取表白者设定的真实心动值 -->
       <div class="score-box score-author-box">
         <div style="font-weight:900;color:var(--shin-purple);font-size:1.05rem;">💌 我给你的心动值</div>
         <div class="score-display" id="authorScoreVal">100%</div>
         <div class="score-comment" id="authorScoreDesc">毫无疑问是满分心动！甚至爆表到了外太空～ 🚀</div>
       </div>
-      <!-- 下卡片：供 TA 自己滑动打分 -->
       <div class="score-box">
         <div style="font-weight:900;color:var(--dark-ink);font-size:1.05rem;">✨ 你给我的心动值（拖动滑杆给我打分）</div>
         <div class="score-display" id="viewerScoreVal">100%</div>
@@ -778,7 +770,6 @@ function renderPage() {
     document.getElementById('authorLiveScoreDesc').textContent = scoreDesc;
     document.getElementById('authorScoreSlider').value = scoreNum;
   } else {
-    // 被表白者端：强制锁定并展示从 URL 解析出的值
     document.getElementById('authorScoreVal').textContent = scoreVal;
     document.getElementById('authorScoreDesc').textContent = scoreDesc;
   }
@@ -953,7 +944,6 @@ document.getElementById('generateShareLinkBtn').addEventListener('click', () => 
   collectDrawerForm();
   localStorage.setItem('MY_CONFESS_CONFIG_FINAL', JSON.stringify(CURRENT_CONFIG));
   
-  // 保证准确编码
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(CURRENT_CONFIG))));
   const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
   
