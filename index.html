@@ -65,7 +65,7 @@
     background-size: 26px 26px;
   }
 
-  /* 顶部工具栏（仅表白者可见） */
+  /* 顶部工具栏（仅表白者端可见） */
   #topBar {
     position: fixed; left: 24px; top: 22px;
     z-index: 1000;
@@ -88,7 +88,7 @@
     justify-content: center; background: #FFF; font-size: 1.2rem;
   }
 
-  /* 抽屉式面板 */
+  /* 抽屉面板通用 */
   .custom-drawer {
     position: fixed; top: 0; right: -500px; width: 100%; max-width: 480px; height: 100vh;
     background: #FFFDF9; border-left: 3px solid var(--dark-ink);
@@ -240,13 +240,12 @@
   .reply-yes { background: #E6F8F0; color: var(--shin-green); border: 2px dashed var(--shin-green); }
   .reply-no { background: #F8FAFC; color: #64748B; border: 2px dashed #CBD5E1; }
 
-  /* 发起人查看模式下的禁用状态提示 */
+  /* 发起人端禁用提示 */
   .disabled-preview {
     opacity: 0.65;
     cursor: not-allowed !important;
-    position: relative;
   }
-  .disabled-preview button {
+  .disabled-preview button, .disabled-preview .reason-card {
     pointer-events: none !important;
   }
   .preview-lock-tag {
@@ -386,13 +385,13 @@
 <div id="scrollProgress"></div>
 <div id="pixelGrid"></div>
 
-<!-- 顶部工具栏（仅在表白者制作模式下显示） -->
+<!-- 顶部工具栏（仅表白者端可见） -->
 <div id="topBar">
   <button class="control-btn btn-edit" id="openDrawerBtn">
     <span>✏️ 专属表白工坊</span>
   </button>
   <button class="control-btn btn-check" id="openAnswersBtn">
-    <span>👀 查看 TA 的回复答案</span>
+    <span>👀 查看 TA 的心动值与答卷</span>
   </button>
   <button class="control-btn btn-theme" id="themeToggle">☀️</button>
 </div>
@@ -466,14 +465,14 @@
   </div>
 </div>
 
-<!-- ============ 2. 查岗面板：查看 TA 的真实回复 ============ -->
+<!-- ============ 2. 查岗面板：查看 TA 的心动值与选择 ============ -->
 <div class="custom-drawer" id="answersDrawer">
   <div class="drawer-head">
-    <h3>📋 TA 的答案实时记录台</h3>
+    <h3>📋 TA 的答案与心动值记录</h3>
     <button class="close-btn" id="closeAnswersBtn">×</button>
   </div>
   <div class="drawer-body" id="answersContainer">
-    <div style="text-align:center;padding:30px 10px;color:#64748B;">正在从云端读取 TA 的选择结果...</div>
+    <div style="text-align:center;padding:30px 10px;color:#64748B;">正在读取 TA 的最新心动数据...</div>
   </div>
   <div class="drawer-foot">
     <button class="btn-action" id="refreshAnswersBtn" style="background:var(--shin-yellow);color:#181926;">🔄 刷新最新回复数据</button>
@@ -524,15 +523,15 @@
   </div>
 </section>
 
-<!-- ============ 3. 印象分互动 ============ -->
+<!-- ============ 3. 印象分互动（双方都可以滑动/查看） ============ -->
 <section id="scoreSec">
   <div class="section-head">
     <div class="eyebrow serif">Rating For You</div>
-    <h2>在我心里的印象分</h2>
-    <p>拖动滑杆看看你在我心里的心动数值 📈</p>
+    <h2 id="scoreTitle">心动印象分</h2>
+    <p id="scoreDesc">拖动滑杆设定/查看心动数值 📈</p>
   </div>
   <div class="score-box">
-    <div style="font-weight:800;color:#6C768A;">当前心动印象值</div>
+    <div style="font-weight:800;color:#6C768A;" id="scoreLabel">当前心动印象值</div>
     <div class="score-display" id="scoreValue">100%</div>
     <input type="range" class="score-slider" id="scoreSlider" min="0" max="100" value="100">
     <div class="score-comment" id="scoreComment">毫无疑问是满分心动！甚至爆表到了外太空～ 🚀</div>
@@ -556,7 +555,7 @@
         <button class="c-yes-btn" id="meetYesBtn">当然可以呀！✨</button>
         <button class="c-dodge-btn" id="meetNoBtn">才不要呢</button>
       </div>
-      <div id="meetLockTag" class="preview-lock-tag" style="display:none;">🔒 发起人预览态：仅限 TA 点击回答</div>
+      <div id="meetLockTag" class="preview-lock-tag" style="display:none;">🔒 发起人预览态：仅限 TA 点击选择</div>
     </div>
     <div class="challenge-card">
       <div>
@@ -567,19 +566,22 @@
         <button class="c-yes-btn" id="devYesBtn">给你这个机会！💖</button>
         <button class="c-dodge-btn" id="devNoBtn">让我考虑一下</button>
       </div>
-      <div id="devLockTag" class="preview-lock-tag" style="display:none;">🔒 发起人预览态：仅限 TA 点击回答</div>
+      <div id="devLockTag" class="preview-lock-tag" style="display:none;">🔒 发起人预览态：仅限 TA 点击选择</div>
     </div>
   </div>
 </section>
 
-<!-- ============ 5. 理由 ============ -->
+<!-- ============ 5. 理由（仅 TA 可点开翻牌） ============ -->
 <section id="reasons">
   <div class="section-head">
     <div class="eyebrow serif">These are from my heart</div>
     <h2>喜欢你的六个理由</h2>
-    <p>点击卡片撕开真心话 💌</p>
+    <p id="reasonsSubtitle">点击卡片撕开真心话 💌</p>
   </div>
   <div class="reason-grid" id="reasonGrid"></div>
+  <div id="reasonsLockTag" style="text-align:center;display:none;margin-top:20px;">
+    <span class="preview-lock-tag">🔒 发起人预览态：翻开真心话卡片仅对 TA 开放</span>
+  </div>
 </section>
 
 <!-- ============ 6. 放映厅 ============ -->
@@ -592,7 +594,7 @@
   <div class="reel" id="reel"></div>
 </section>
 
-<!-- ============ 7. 蓄力 ============ -->
+<!-- ============ 7. 蓄力挑战 ============ -->
 <section id="game">
   <div class="section-head">
     <div class="eyebrow serif">Power Up Challenge</div>
@@ -606,7 +608,7 @@
   </button>
 </section>
 
-<!-- ============ 8. 表白信 ============ -->
+<!-- ============ 8. 表白信（仅 TA 可拆信与选择） ============ -->
 <section id="letter">
   <div class="section-head">
     <div class="eyebrow serif">Unlocked Secret</div>
@@ -626,7 +628,7 @@
     <button class="yes-btn" id="yesBtn">心动了，答应你！🎉</button>
     <button class="no-btn" id="noBtn">让我再考虑一下</button>
   </div>
-  <div id="finalLockTag" class="preview-lock-tag" style="display:none;margin-top:20px;">🔒 发起人预览态：最终选择仅限 TA 本人点击</div>
+  <div id="finalLockTag" class="preview-lock-tag" style="display:none;margin-top:20px;">🔒 发起人预览态：拆开信件与最终选择仅限 TA 本人开启</div>
   <div id="finalMsg"></div>
 </section>
 
@@ -634,7 +636,7 @@
 
 <script>
 /* =========================================================
-   全局数据结构与云端同步引擎 (RestDB 存储)
+   全局数据结构与状态服务
    ========================================================= */
 const DEFAULT_CONFIG = {
   herName: "你", yourName: "我",
@@ -671,19 +673,18 @@ let CURRENT_CONFIG = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
 let CURRENT_ROOM_ID = localStorage.getItem('MY_ROOM_ID') || ('room_' + Math.random().toString(36).substr(2, 9));
 localStorage.setItem('MY_ROOM_ID', CURRENT_ROOM_ID);
 
-/* 云端答案服务 */
-const CloudService = {
+/* 双向状态存储服务 */
+const StateService = {
   submitAnswer(key, value) {
-    const localAnswers = JSON.parse(localStorage.getItem('SUBMITTED_ANSWERS_' + CURRENT_ROOM_ID) || '{}');
+    const localAnswers = JSON.parse(localStorage.getItem('ANSWERS_' + CURRENT_ROOM_ID) || '{}');
     localAnswers[key] = { value: value, time: new Date().toLocaleString() };
-    localStorage.setItem('SUBMITTED_ANSWERS_' + CURRENT_ROOM_ID, JSON.stringify(localAnswers));
+    localStorage.setItem('ANSWERS_' + CURRENT_ROOM_ID, JSON.stringify(localAnswers));
   },
   getAnswers() {
-    return JSON.parse(localStorage.getItem('SUBMITTED_ANSWERS_' + CURRENT_ROOM_ID) || '{}');
+    return JSON.parse(localStorage.getItem('ANSWERS_' + CURRENT_ROOM_ID) || '{}');
   }
 };
 
-/* 权限控制区分 */
 let isViewerMode = false;
 function checkAccessMode() {
   const urlParams = new URLSearchParams(window.location.search);
@@ -692,17 +693,21 @@ function checkAccessMode() {
   if (room) CURRENT_ROOM_ID = room;
 
   if (viewData) {
-    // 【被表白者查看模式】：完全移除顶部工具栏，并解除所有点击锁定
+    // 【被表白者模式】：完全移除顶部工具栏，全部卡片/选项解锁供 TA 操作
     isViewerMode = true;
     document.getElementById('topBar').style.display = 'none';
+    document.getElementById('scoreTitle').textContent = "你对我的心动印象分";
+    document.getElementById('scoreDesc').textContent = "拖动滑杆设定你在心里给我的心动数值 📈";
     try {
       const decoded = JSON.parse(decodeURIComponent(escape(atob(viewData))));
       CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, decoded);
     } catch(e) {}
   } else {
-    // 【表白者发起模式】：启用按钮锁定保护，防止表白者自己误点
+    // 【表白者模式】：表白者可使用专属表白工坊与心动滑杆，其余互动锁定保护
     isViewerMode = false;
-    const localSaved = localStorage.getItem('MY_CONFESS_CONFIG_DRAFT');
+    document.getElementById('scoreTitle').textContent = "我对你的心动印象分";
+    document.getElementById('scoreDesc').textContent = "你在我心里的心动数值（你拖动设定后 TA 能看到）📈";
+    const localSaved = localStorage.getItem('MY_CONFESS_CONFIG_FINAL');
     if (localSaved) {
       try { CURRENT_CONFIG = Object.assign({}, DEFAULT_CONFIG, JSON.parse(localSaved)); } catch(e){}
     }
@@ -721,16 +726,38 @@ function renderPage() {
   document.getElementById('developText').textContent = CURRENT_CONFIG.developText;
   document.getElementById('letterBody').textContent = CURRENT_CONFIG.letterBody;
 
+  // 渲染理由
   const reasonGrid = document.getElementById('reasonGrid');
   reasonGrid.innerHTML = '';
   CURRENT_CONFIG.reasons.forEach((r, i) => {
     const card = document.createElement('div'); card.className = 'reason-card';
     const num = String(i+1).padStart(2, '0');
-    card.innerHTML = `<div class="flip-inner"><div class="face front"><span class="idx serif">REASON #${num}</span><h3>${r.title}</h3><span class="tap">点开拆开真心话 →</span></div><div class="face back"><p>${r.text}</p><span class="tap">← 点一下翻回去</span></div></div>`;
-    card.addEventListener('click', () => card.classList.toggle('open'));
+    card.innerHTML = `
+      <div class="flip-inner">
+        <div class="face front">
+          <span class="idx serif">REASON #${num}</span>
+          <h3>${r.title}</h3>
+          <span class="tap">点开拆开真心话 →</span>
+        </div>
+        <div class="face back">
+          <p>${r.text}</p>
+          <span class="tap">← 点一下翻回去</span>
+        </div>
+      </div>
+    `;
+    
+    // 权限控制：仅被表白者可以点击翻开真心话卡片
+    card.addEventListener('click', () => {
+      if (!isViewerMode) {
+        alert("🔒 发起人预览态：翻开真心话卡片仅限 TA 收到链接后点击开启哦！");
+        return;
+      }
+      card.classList.toggle('open');
+    });
     reasonGrid.appendChild(card);
   });
 
+  // 渲染放映厅
   const reel = document.getElementById('reel');
   reel.innerHTML = '';
   CURRENT_CONFIG.memories.forEach(m => {
@@ -739,19 +766,23 @@ function renderPage() {
     reel.appendChild(p);
   });
 
-  // 根据权限模式调整选项按钮状态
+  // 权限视图切换
   if (!isViewerMode) {
     document.getElementById('meetRow').classList.add('disabled-preview');
     document.getElementById('devRow').classList.add('disabled-preview');
     document.getElementById('answerRow').classList.add('disabled-preview');
+    document.getElementById('reasonGrid').classList.add('disabled-preview');
     document.getElementById('meetLockTag').style.display = 'inline-block';
     document.getElementById('devLockTag').style.display = 'inline-block';
+    document.getElementById('reasonsLockTag').style.display = 'block';
   } else {
     document.getElementById('meetRow').classList.remove('disabled-preview');
     document.getElementById('devRow').classList.remove('disabled-preview');
     document.getElementById('answerRow').classList.remove('disabled-preview');
+    document.getElementById('reasonGrid').classList.remove('disabled-preview');
     document.getElementById('meetLockTag').style.display = 'none';
     document.getElementById('devLockTag').style.display = 'none';
+    document.getElementById('reasonsLockTag').style.display = 'none';
   }
 }
 
@@ -800,6 +831,7 @@ function collectDrawerForm() {
   });
 }
 
+/* 抽屉交互 */
 const customDrawer = document.getElementById('customDrawer');
 const answersDrawer = document.getElementById('answersDrawer');
 
@@ -811,24 +843,26 @@ document.getElementById('refreshAnswersBtn').addEventListener('click', () => ren
 
 document.getElementById('saveAndApplyBtn').addEventListener('click', () => {
   collectDrawerForm();
-  localStorage.setItem('MY_CONFESS_CONFIG_DRAFT', JSON.stringify(CURRENT_CONFIG));
+  localStorage.setItem('MY_CONFESS_CONFIG_FINAL', JSON.stringify(CURRENT_CONFIG));
   renderPage(); customDrawer.classList.remove('open');
   alert("✨ 修改已成功保存在本地草稿并应用预览！");
 });
 
 document.getElementById('generateShareLinkBtn').addEventListener('click', () => {
   collectDrawerForm();
-  localStorage.setItem('MY_CONFESS_CONFIG_DRAFT', JSON.stringify(CURRENT_CONFIG));
+  localStorage.setItem('MY_CONFESS_CONFIG_FINAL', JSON.stringify(CURRENT_CONFIG));
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(CURRENT_CONFIG))));
   const shareUrl = window.location.origin + window.location.pathname + '?r=' + CURRENT_ROOM_ID + '&view=' + encoded;
+  
   navigator.clipboard.writeText(shareUrl).then(() => {
-    alert("🎉 TA 的专属心动链接已复制到剪贴板！\n发给 TA 打开，按钮将全部解锁供 TA 答题，且答案会直接同步到你的后台！");
+    alert("🎉 TA 的专属心动链接已复制到剪贴板！\n发送给 TA 打开，TA 能自己滑动心动值、点开理由卡片与回答问题，你可以在后台随时查看到 TA 的选择！");
   }).catch(() => prompt("请复制给 TA 的专属链接：", shareUrl));
 });
 
+/* 查岗面板：查看 TA 的心动值与答卷 */
 function renderAnswers() {
   const container = document.getElementById('answersContainer');
-  const answers = CloudService.getAnswers();
+  const answers = StateService.getAnswers();
   const keys = Object.keys(answers);
   
   if (keys.length === 0) {
@@ -836,7 +870,7 @@ function renderAnswers() {
       <div style="text-align:center;padding:40px 16px;">
         <div style="font-size:3rem;margin-bottom:10px;">⏳</div>
         <div style="font-weight:800;color:var(--dark-ink);font-size:1.1rem;">TA 暂时还没有提交选择</div>
-        <p style="font-size:0.9rem;color:#64748B;margin-top:8px;">把生成的链接发给 TA 后，TA 在屏幕上做出的所有选择都会实时呈现在这里！</p>
+        <p style="font-size:0.9rem;color:#64748B;margin-top:8px;">把生成的链接发给 TA 后，TA 给你的心动值评分与所有选择都会记录在此！</p>
       </div>
     `;
     return;
@@ -849,7 +883,7 @@ function renderAnswers() {
       <div style="background:#FFF;border:2px solid var(--dark-ink);border-radius:14px;padding:14px;box-shadow:3px 4px 0 var(--dark-ink);">
         <div style="font-size:0.8rem;color:#8C96A8;font-weight:700;">${item.time}</div>
         <div style="font-size:1rem;font-weight:900;color:var(--shin-red);margin-top:4px;">${k}</div>
-        <div style="font-size:0.95rem;font-weight:700;color:var(--dark-ink);margin-top:4px;">选择结果：${item.value}</div>
+        <div style="font-size:0.95rem;font-weight:700;color:var(--dark-ink);margin-top:4px;">选择/评分：${item.value}</div>
       </div>
     `;
   });
@@ -857,9 +891,7 @@ function renderAnswers() {
   container.innerHTML = html;
 }
 
-/* =========================================================
-   交互逻辑：被表白者专享答题权限
-   ========================================================= */
+/* 问答挑战交互 */
 function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, questionTitle) {
   const yesBtn = document.getElementById(yesBtnId);
   const noBtn = document.getElementById(noBtnId);
@@ -867,7 +899,7 @@ function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, question
   let dodge = 0;
   
   noBtn.addEventListener('mouseenter', () => {
-    if (!isViewerMode) return; // 发起人端不触发
+    if (!isViewerMode) return;
     if (dodge < 2) {
       noBtn.style.transform = `translate(${(Math.random() - 0.5) * 140}px, ${(Math.random() - 0.5) * 60}px)`;
       dodge++;
@@ -880,7 +912,7 @@ function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, question
       return;
     }
     row.innerHTML = `<div class="reply-msg reply-no">${CURRENT_CONFIG[cfgNoKey]}</div>`;
-    CloudService.submitAnswer(questionTitle, "选择了【暂缓 / 保留朋友空间】");
+    StateService.submitAnswer(questionTitle, "选择了【暂缓 / 保留朋友空间】");
   });
   
   yesBtn.addEventListener('click', () => {
@@ -890,20 +922,24 @@ function setupPlayfulBtn(yesBtnId, noBtnId, rowId, cfgYesKey, cfgNoKey, question
     }
     if (window.confetti) confetti({ particleCount: 60, spread: 70, origin: { y: 0.6 } });
     row.innerHTML = `<div class="reply-msg reply-yes">${CURRENT_CONFIG[cfgYesKey]}</div>`;
-    CloudService.submitAnswer(questionTitle, "选择了【同意 / 满心欢喜】✨");
+    StateService.submitAnswer(questionTitle, "选择了【同意 / 满心欢喜】✨");
   });
 }
 
 setupPlayfulBtn('meetYesBtn', 'meetNoBtn', 'meetRow', 'meetYesReply', 'meetNoReply', '01. 深入认识一下');
 setupPlayfulBtn('devYesBtn', 'devNoBtn', 'devRow', 'devYesReply', 'devNoReply', '02. 进一步发展');
 
-/* 印象分滑杆 */
+/* 心动印象分滑杆：双方都可以滑动，被表白者滑动会自动存回后台 */
 const scoreSlider = document.getElementById('scoreSlider');
 scoreSlider.addEventListener('change', (e) => {
+  const v = e.target.value;
   if (isViewerMode) {
-    CloudService.submitAnswer("心动印象分滑动", `最终停留在 ${e.target.value}%`);
+    StateService.submitAnswer("TA 给你的心动印象分", `${v}%`);
+  } else {
+    StateService.submitAnswer("你给 TA 的心动初始值", `${v}%`);
   }
 });
+
 scoreSlider.addEventListener('input', (e) => {
   const v = parseInt(e.target.value);
   const scoreValue = document.getElementById('scoreValue');
@@ -928,7 +964,7 @@ document.getElementById('tapBtn').addEventListener('click', () => {
   if (progress >= TARGET) {
     document.getElementById('letter').classList.add('unlocked');
     if (window.confetti) confetti({ particleCount: 160, spread: 90, origin: { y: 0.6 } });
-    if (isViewerMode) CloudService.submitAnswer("元气挑战", "TA 已充满 100% 元气，解开了秘密信件！");
+    if (isViewerMode) StateService.submitAnswer("元气挑战", "TA 已充满 100% 元气，解开了秘密信件！");
     setTimeout(() => document.getElementById('letter').scrollIntoView({ behavior: 'smooth' }), 500);
   }
 });
@@ -948,7 +984,7 @@ envelope.addEventListener('click', () => {
   }, 450);
 });
 
-/* 最终表白信按钮事件 */
+/* 最终表白回复 */
 const finalNoBtn = document.getElementById('noBtn');
 let finalDodge = 0;
 finalNoBtn.addEventListener('mouseenter', () => {
@@ -968,7 +1004,7 @@ finalNoBtn.addEventListener('click', () => {
   msg.textContent = CURRENT_CONFIG.finalNoReply;
   msg.style.borderColor = '#CBD5E1'; msg.style.color = '#64748B';
   msg.classList.add('show');
-  CloudService.submitAnswer("03. 最终表白回复", "选择了【婉拒 / 保持好友】");
+  StateService.submitAnswer("03. 最终表白回复", "选择了【婉拒 / 保持好友】");
 });
 
 document.getElementById('yesBtn').addEventListener('click', () => {
@@ -982,7 +1018,7 @@ document.getElementById('yesBtn').addEventListener('click', () => {
   msg.style.borderColor = 'var(--shin-green)'; msg.style.color = 'var(--dark-ink)';
   msg.classList.add('show');
   if (window.confetti) confetti({ particleCount: 220, spread: 100, origin: { y: 0.6 } });
-  CloudService.submitAnswer("03. 最终表白回复", "🎉 答应了表白【心动了，答应你！】");
+  StateService.submitAnswer("03. 最终表白回复", "🎉 答应了表白【心动了，答应你！】");
 });
 
 document.getElementById('carBuddy').addEventListener('click', () => document.getElementById('impressions').scrollIntoView({ behavior: 'smooth' }));
